@@ -7,7 +7,7 @@ class Config():
 # env_development
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///mad22222.sqlite'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///11.sqlite'
     SECRET_KEY = 'my-very-secret-key'
 
     SONG_UPLOAD_FOLDER = 'static/songs'

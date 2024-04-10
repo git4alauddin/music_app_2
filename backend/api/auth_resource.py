@@ -3,7 +3,7 @@ from flask import request, jsonify
 from models.user_model import User
 from werkzeug.security import check_password_hash, generate_password_hash
 from api.api_models import user_login_model, user_register_model
-from flask_security import login_user, current_user
+from flask_security import login_user, current_user, logout_user
 from extensions.extension import db
 from models.user_model import user_datastore
 
@@ -23,6 +23,13 @@ class LoginApi(Resource):
 
         else:
             return {'message': 'Invalid username or password'}, 401
+        
+@ns_auth.route('/logout')
+class LogoutApi(Resource):
+    def get(self):
+        logout_user()
+        return {'message': 'User logged out'}, 200
+
 
 @ns_auth.route('/register')
 class RegisterApi(Resource):
@@ -40,3 +47,7 @@ class RegisterApi(Resource):
             db.session.commit()
 
             return {'messgae': 'User created'}, 201  # Assuming user.to_dict() returns a JSON serializable representation of the user
+
+
+
+    
