@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource
 from flask import request
-from api.api_models import upload_song_model
+from api.api_models import upload_song_model, output_all_songs
 from random import random
 from flask_security import current_user
 from werkzeug.utils import secure_filename
@@ -64,3 +64,48 @@ class UploadSongApi(Resource):
             return {'message': 'Something went wrong'}, 500
         
         return {'message': 'Song uploaded successfully'}, 201
+    
+
+@ns_song.route('/song_lyrics/<string:id>')
+class SongLyricsApi(Resource):
+    def get(self, id):
+        song = Song.query.get(id)
+        if song:
+            lyrics = song.lyrics
+
+            return {'lyrics': lyrics}, 200
+        else:
+            return {'message': 'Song not found'}, 404
+    
+
+@ns_song.route('/delete_song/<string:id>')
+class DeleteSongApi(Resource):
+    def delete(self, id):
+        song = Song.query.get(id)
+
+        if song:
+            # delete_song
+            song_file = SongFile.query.filter_by(song_id=id).first()
+            file_name = song_file.file_name
+            # song_file_path = os.path.join(current_app.config['SONG_UPLOAD_FOLDER'], file_name)
+            # if os.path.exists(song_file_path):
+            #     print(f'{song_file_path} exists')
+            #     os.remove(song_file_path)
+            
+            # delete song_metadata
+            db.session.delete(song_file)
+            db.session.delete(song)
+            db.session.commit()
+
+            return {'message': 'Song deleted successfully'}, 204
+
+        else:
+            return {'message': 'Song not found'}, 404
+
+
+@ns_song.route('/songs')
+class SongListApi(Resource):
+    @ns_song.marshal_with(output_all_songs)
+    def get(self):
+        songs = Song.query.all()
+        return songs, 200
