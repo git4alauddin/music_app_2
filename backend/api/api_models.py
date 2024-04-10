@@ -15,6 +15,14 @@ user_register_model = api.model("UserRegister", {
     "password": fields.String
 })
 
+# songs
+upload_song_model = api.model("UploadSong", {
+    "title": fields.String,
+    "artist": fields.String,
+    "genre": fields.String,
+    "lyrics": fields.String
+})
+
 
 
 

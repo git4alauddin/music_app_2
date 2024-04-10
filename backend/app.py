@@ -7,6 +7,7 @@ from models.user_model import user_datastore
 
 # import resources
 from api.auth_resource import ns_auth
+from api.song_resource import ns_song
 
 
 # initialize app
@@ -23,6 +24,7 @@ api.init_app(app)
 
 # register namespaces
 api.add_namespace(ns_auth)
+api.add_namespace(ns_song)
 
 
 if __name__ == '__main__':

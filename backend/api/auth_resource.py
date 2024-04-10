@@ -8,7 +8,7 @@ from extensions.extension import db
 from models.user_model import user_datastore
 
 
-ns_auth = Namespace('auth')
+ns_auth = Namespace('auth', description='Authentication related operations')
 
 @ns_auth.route('/login')
 class LoginApi(Resource):
