@@ -19,7 +19,7 @@ class LoginApi(Resource):
         user = user_datastore.find_user(email=email)
         if user and check_password_hash(user.password, password):
             login_user(user)
-            return {"token": user.get_auth_token(), "email": user.email, "role": user.roles[0].name , "id":user.id}, 200
+            return {"token": user.get_auth_token(), "email": user.email, "role": user.roles[0].name , "id":user.id, 'message': 'User logged in'}, 200
 
         else:
             return {'message': 'Invalid username or password'}, 401

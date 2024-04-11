@@ -1,24 +1,34 @@
 <template>
-  <div id="app">
-    <NavBar />
-    <router-view />
-    <HelloWorld />
-  </div>
-</template>
+  <navbar />
+  <body>
+    <router-view></router-view>
+  </body>
+  
+  
 
+  
+  
+</template>
 <script>
-import HelloWorld from './components/HelloWorld.vue';
-import NavBar from './components/NavBar.vue';
+import { RouterLink, RouterView } from 'vue-router'
+import {ref} from 'vue'
+import navbar from "@/components/navbar.vue"
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld, 
-    NavBar
-  }
+    navbar,
+    RouterLink,
+    RouterView,
+  
+  },
 }
+
 </script>
 
+
 <style>
-/* Add your global styles here */
+
 </style>
+

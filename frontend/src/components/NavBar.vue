@@ -8,20 +8,24 @@
         </div>
         <ul class="navbar-nav">
           <li><router-link to="/">Home</router-link></li>
+          <li><router-link to="/dashboard">Dashboard</router-link></li>
           <li><router-link to="/about">About</router-link></li>
           <!-- Add more links as needed -->
         </ul>
       </div>
     </nav>
   </template>
+
+  <script setup>
+  import { computed, ref } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import router from '../router/index'
   
-  <script>
-  export default {
-    name: 'Navbar'
-  }
+  const route = useRoute()
+  
   </script>
-  
-  <style scoped>
+
+<style scoped>
   .navbar {
     background-color: #007bff;
     color: #fff;
