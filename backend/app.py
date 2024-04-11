@@ -1,5 +1,6 @@
 # imports
 from flask import Flask 
+from flask_cors import CORS
 from extensions.extension import api, db
 from flask_security import Security
 from configs.config import DevelopmentConfig
@@ -15,6 +16,7 @@ from api.user_resource import ns_user
 
 # initialize app
 app = Flask(__name__)
+CORS(app)
 app.config.from_object(DevelopmentConfig)
 
 # initialize extensions
