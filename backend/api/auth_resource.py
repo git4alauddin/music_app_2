@@ -3,7 +3,7 @@ from flask import request, jsonify
 from models.user_model import User
 from werkzeug.security import check_password_hash, generate_password_hash
 from api.api_models import user_login_model, user_register_model
-from flask_security import login_user, current_user, logout_user
+from flask_security import login_user, current_user, logout_user, auth_required, roles_accepted
 from extensions.extension import db
 from models.user_model import user_datastore
 
@@ -16,6 +16,7 @@ class LoginApi(Resource):
     def post(self):
         email = request.json.get('email')
         password = request.json.get('password')
+        print(email, password)
         user = user_datastore.find_user(email=email)
         if user and check_password_hash(user.password, password):
             login_user(user)
@@ -23,6 +24,13 @@ class LoginApi(Resource):
 
         else:
             return {'message': 'Invalid username or password'}, 401
+        
+@ns_auth.route('/test')
+class TestApi(Resource):
+    @auth_required('token')
+    @roles_accepted('user')
+    def get(self):
+        return {'message': current_user.id}, 200
         
 @ns_auth.route('/logout')
 class LogoutApi(Resource):

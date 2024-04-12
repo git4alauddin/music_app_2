@@ -24,14 +24,14 @@ const router = createRouter({
       component: () => import('../views/register.vue')
     },
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: () => import('../views/dashboard.vue')
-    },
-    {
       path: '/user_dash',
       name: 'user_dash',
       component: () => import('../views/user_dash.vue')
+    },
+    {
+      path: '/upload_song',
+      name: 'upload_song',
+      component: () => import('../views/upload_song.vue')
     },
     {
       path: '/admin_dash',

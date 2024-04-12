@@ -1,8 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-md">
     <router-link class="navbar-brand" to="/"
-      ><img src="#" style="width: 50px"
-    /></router-link>
+      ></router-link>
     <button
       class="navbar-toggler"
       type="button"

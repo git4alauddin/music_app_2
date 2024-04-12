@@ -4,7 +4,7 @@
     <div id="m">
       <div class="container">
         <div class="jumbotron text-center">
-          <h1>Get Ready for Shopping</h1>
+          <h1>Ready to explore the music world?</h1>
           <h5>Enter your details</h5>
           <form @submit.prevent="login" novalidate>
             <EmailField v-model="user.email" />
@@ -49,7 +49,7 @@
     }
   })
   
-  function login() {
+  async function login() {
     customfetch('http://127.0.0.1:5000/auth/login', {
       method: 'POST',
       headers: {
@@ -63,8 +63,9 @@
         localStorage.setItem('token', data.token)
         localStorage.setItem('role', 'user')
         localStorage.setItem('loggedin', 'true')
-        localStorage.setItem('email', data.email)
-        router.push('/dashboard')
+        localStorage.setItem('email', data.email),
+        localStorage.setItem('id', data.id)
+        router.push('/user_dash')
       })
       .catch((err) => {
         console.log(err.message)

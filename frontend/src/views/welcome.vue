@@ -25,6 +25,19 @@
   
   </script>
 
-  <style>
-  </style>
+<style>
+.jumbotron {
+  font-family: cursive;
+
+  /* background-image: url('@/assets/BGimg3.jpg'); */
+  background-size: 100% 100%;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+.container {
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
+}
+</style>
   

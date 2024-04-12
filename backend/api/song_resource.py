@@ -2,7 +2,7 @@ from flask_restx import Namespace, Resource
 from flask import request
 from api.api_models import upload_song_model, output_all_songs
 from random import random
-from flask_security import current_user
+from flask_security import current_user, auth_required
 from werkzeug.utils import secure_filename
 import os
 from flask import current_app
@@ -16,16 +16,17 @@ ns_song = Namespace('songs', description='Song related operations')
 @ns_song.route('/upload_song')
 class UploadSongApi(Resource):
     @ns_song.expect(upload_song_model)
+    @auth_required('token')
     def post(self):
         title = request.json.get('title')
         artist = request.json.get('artist')
         genre = request.json.get('genre')
         lyrics = request.json.get('lyrics')
+        
 
         # audio_file = request.files.get('audio_file')
         random_suffix = random.randint(0, 10000)
 
-        creator_id = current_user.id
         # original_filename = secure_filename(audio_file.filename)
         # file_extension = original_filename.rsplit('.', 1)[1]
         file_extension = 'mp3'
@@ -40,7 +41,7 @@ class UploadSongApi(Resource):
             artist=artist,
             genre=genre,
             lyrics=lyrics,
-            creator_id=creator_id
+            creator_id=current_user.id
         )
         
         try:
@@ -78,14 +79,15 @@ class SongLyricsApi(Resource):
             return {'message': 'Song not found'}, 404
     
 
-@ns_song.route('/delete_song/<string:id>')
+@ns_song.route('/delete_song/<string:song_id>')
 class DeleteSongApi(Resource):
-    def delete(self, id):
-        song = Song.query.get(id)
+    @auth_required('token')
+    def delete(self, song_id):
+        song = Song.query.get(song_id)
 
         if song:
             # delete_song
-            song_file = SongFile.query.filter_by(song_id=id).first()
+            song_file = SongFile.query.filter_by(song_id=song_id).first()
             file_name = song_file.file_name
             # song_file_path = os.path.join(current_app.config['SONG_UPLOAD_FOLDER'], file_name)
             # if os.path.exists(song_file_path):

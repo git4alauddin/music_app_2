@@ -3,7 +3,7 @@ from models.user_model import User
 from models.playlist_model import Playlist
 from models.song_model import Song
 from models.album_model import Album
-from flask_login import current_user
+from flask_security import current_user, auth_required, roles_accepted
 from api.api_models import user_output_model, album_output_model,playlist_output_model, user_input_model, output_all_songs
 
 from extensions.extension import db
@@ -54,11 +54,14 @@ class UserAlbumApi(Resource):
         return albums, 200
 
 #----------------------------------/users/<string:id>/songs-------------------------------#  
-@ns_user.route('/users/<string:id>/songs')
+@ns_user.route('/users/songs')
 class UserSongApi(Resource):
     @ns_user.marshal_with(output_all_songs)
-    def get(self, id):
-        songs = Song.query.filter_by(creator_id=id).all()
+    @auth_required('token')
+    @roles_accepted('user')
+    def get(self):
+        print(current_user.id)
+        songs = Song.query.filter_by(creator_id=current_user.id).all()
         return songs, 200
 
 #----------------------------------/users------------------------------------#
