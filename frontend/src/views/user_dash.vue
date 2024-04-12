@@ -54,6 +54,35 @@
         <button type="submit" @click="createAlbum">Create Album</button>
       </form>
     </div>
+
+    <!-- Your Albums -->
+    <div class="your-albums">
+      <h2 @click.prevent="toggleYourAlbums">Your Albums</h2>
+      <ul v-if="showYourAlbums">
+        <li v-for="album in yourAlbums" :key="album.id">
+          <div class="album-details">
+            <h3>{{ album.title }}</h3>
+            <p><strong>Release Year:</strong> {{ album.release_year }}</p>
+            <!-- Display other album details as needed -->
+          </div>
+        </li>
+      </ul>
+    </div>
+
+
+    <!-- Your Playlists -->
+    <div class="your-playlists">
+      <h2 @click.prevent="toggleYourPlaylists">Your Playlists</h2>
+      <ul v-if="showYourPlaylists">
+        <li v-for="playlist in yourPlaylists" :key="playlist.id">
+          <div class="playlist-details">
+            <h3>{{ playlist.title }}</h3>
+            <!-- Display other playlist details as needed -->
+          </div>
+        </li>
+      </ul>
+    </div>
+
   </div>
 </template>
 
@@ -65,9 +94,13 @@ export default {
       username: '',
       user_id : '',
       uploadedSongs: [],
+      yourAlbums: [],
+      yourPlaylists: [],
       showUploadedSongs: false,
       showPlaylistForm: false,
       showAlbumForm: false,
+      showYourAlbums: false,
+      showYourPlaylists: false,
       playlistName: '',
       albumName: '',
       releaseYear: '',
@@ -75,6 +108,8 @@ export default {
   },
   created() {
     this.fetchUploadedSongs();
+    this.fetchYourAlbums();
+    this.fetchYourPlaylists();
   },
   mounted() {    
     this.username = localStorage.getItem('email') || '';
@@ -84,6 +119,16 @@ export default {
     toggleUploadedSongs(){
       if (this.uploadedSongs.length) {
         this.showUploadedSongs = !this.showUploadedSongs;
+      }
+    },
+    toggleYourAlbums(){
+      if (this.yourAlbums.length) {
+        this.showYourAlbums = !this.showYourAlbums;
+      }
+    },
+    toggleYourPlaylists(){
+      if (this.yourPlaylists.length) {
+        this.showYourPlaylists = !this.showYourPlaylists;
       }
     },
     togglePlaylistForm(){
@@ -108,6 +153,31 @@ export default {
         console.error('Error fetching uploaded songs:', error);
       }
     },
+
+    async fetchYourAlbums() {
+      try {
+        const response = await axios.get('http://localhost:5000/users/users/albums', {
+          headers: { Authorization: localStorage.getItem('token') },
+        })
+        this.yourAlbums = response.data;
+        console.log('Your albums:', this.yourAlbums);
+      } catch (error) {
+        console.error('Error fetching your albums:', error);
+      }
+    },
+
+    async fetchYourPlaylists() {
+      try {
+        const response = await axios.get('http://localhost:5000/users/users/playlists', {
+          headers: { Authorization: localStorage.getItem('token') },
+        })
+        this.yourPlaylists = response.data;
+        console.log('Your playlists:', this.yourPlaylists);
+      } catch (error) {
+        console.error('Error fetching your playlists:', error);
+      }
+    },
+
     deleteSong(songId) {
       axios.delete(`http://localhost:5000/songs/delete_song/${songId}`, {
         headers: { Authorization: localStorage.getItem('token') }, 
@@ -133,6 +203,8 @@ export default {
         console.log('Playlist created successfully:', response.data);
         this.playlistName = '';
         this.showPlaylistForm = false;
+
+        this.fetchYourPlaylists();
       } catch (error) {
         console.error('Error creating playlist:', error);
       }
@@ -149,6 +221,8 @@ export default {
         console.log('Album created successfully:', response.data);
         this.albumName = '';
         this.showAlbumForm = false;
+
+        this.fetchYourAlbums();
       } catch (error) {
         console.error('Error creating album:', error);
       }
@@ -159,29 +233,7 @@ export default {
 </script>
 
 <style scoped>
-/* Add your component styles here */
-.user-info {
-  margin-bottom: 20px;
-}
-.actions {
-  display: flex;
-  justify-content: space-between;
-}
-.uploaded-songs {
-  margin-top: 20px;
-  cursor: pointer;
-}
-.uploaded-songs h2 {
-  text-decoration: underline;
-}
-.song-details {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-.playlist-form,
-.album-form {
-  margin-top: 20px;
-  cursor: pointer;
-}
+
 </style>
+
+

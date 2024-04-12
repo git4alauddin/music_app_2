@@ -40,6 +40,8 @@ class UserApi(Resource):
 #----------------------------------/users/<string:id>/playlists-------------------------------#
 @ns_user.route('/users/playlists')
 class UserPlaylistApi(Resource):
+    @auth_required('token')
+    @roles_accepted('user', 'creator')
     @ns_user.marshal_with(playlist_output_model)
     def get(self):
         playlists = Playlist.query.filter_by(user_id=current_user.id).all()
@@ -49,6 +51,7 @@ class UserPlaylistApi(Resource):
 @ns_user.route('/users/albums')
 class UserAlbumApi(Resource):
     @auth_required('token')
+    @roles_accepted('user', 'creator')
     @ns_user.marshal_with(album_output_model)
     def get(self):
         albums = Album.query.filter_by(user_id=current_user.id).all()
