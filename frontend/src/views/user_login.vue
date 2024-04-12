@@ -38,7 +38,7 @@
   import customfetch from '../modules/customfetch'
   import router from '../router/index'
   const loggedin = localStorage.getItem('loggedin')
-  const role = localStorage.getItem('user')
+  const role = localStorage.getItem('role')
   const user = reactive({
     email: '',
     password: ''
@@ -61,7 +61,7 @@
       .then((data) => {
         console.log(data.token)
         localStorage.setItem('token', data.token)
-        localStorage.setItem('user', 'customer')
+        localStorage.setItem('role', 'user')
         localStorage.setItem('loggedin', 'true')
         localStorage.setItem('email', data.email)
         router.push('/dashboard')
