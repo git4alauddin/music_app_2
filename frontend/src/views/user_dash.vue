@@ -20,12 +20,39 @@
             <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
             <!-- Display other song details as needed -->
             <div>
-              <button @click="editSong(song.id)">Edit</button>
               <button @click="deleteSong(song.id)">Delete</button>
             </div>
           </div>
         </li>
       </ul>
+    </div>
+    
+    <!-- Create Playlist Form -->
+    <div class="playlist-form" @click="togglePlaylistForm">
+      <h2>Create Playlist</h2>
+      <form v-if="showPlaylistForm" @submit.prevent="createPlaylist">
+        <div class="form-group">
+          <label for="playlistName">Playlist Name:</label>
+          <input type="text" id="playlistName" v-model="playlistName" @click.stop required>
+        </div>
+        <button type="submit" @click="createPlaylist">Create Playlist</button>
+      </form>
+    </div>
+
+    <!-- Create Album Form -->
+    <div class="album-form" @click="toggleAlbumForm">
+      <h2>Create Album</h2>
+      <form v-if="showAlbumForm" @submit.prevent="createAlbum">
+        <div class="form-group">
+          <label for="albumName">Album Name:</label>
+          <input type="text" id="albumName" v-model="albumName" @click.stop required>
+          </div>
+          <div class="form-group">
+            <label for="releaseYear">Release Year:</label>
+            <input type="number" id="releaseYear" v-model="releaseYear" @click.stop required>
+        </div>
+        <button type="submit" @click="createAlbum">Create Album</button>
+      </form>
     </div>
   </div>
 </template>
@@ -36,8 +63,14 @@ export default {
   data() {
     return {
       username: '',
+      user_id : '',
       uploadedSongs: [],
-      showUploadedSongs: false
+      showUploadedSongs: false,
+      showPlaylistForm: false,
+      showAlbumForm: false,
+      playlistName: '',
+      albumName: '',
+      releaseYear: '',
     };
   },
   created() {
@@ -45,6 +78,7 @@ export default {
   },
   mounted() {    
     this.username = localStorage.getItem('email') || '';
+    this.user_id = localStorage.getItem('id') || '';
   },
   methods: {
     toggleUploadedSongs(){
@@ -52,6 +86,17 @@ export default {
         this.showUploadedSongs = !this.showUploadedSongs;
       }
     },
+    togglePlaylistForm(){
+      this.showPlaylistForm = !this.showPlaylistForm;
+      // Hide album form when playlist form is toggled
+      this.showAlbumForm = false;
+    },
+    toggleAlbumForm(){
+      this.showAlbumForm = !this.showAlbumForm;
+      // Hide playlist form when album form is toggled
+      this.showPlaylistForm = false;
+    },
+
     async fetchUploadedSongs() {
       try {
         const response = await axios.get('http://localhost:5000/users/users/songs', {
@@ -63,24 +108,51 @@ export default {
         console.error('Error fetching uploaded songs:', error);
       }
     },
-    editSong(songId) {
-      // Implement your edit logic here, e.g., navigate to edit page
-      // out api endpoint is 
-      console.log('Edit song:', songId);
+    deleteSong(songId) {
+      axios.delete(`http://localhost:5000/songs/delete_song/${songId}`, {
+        headers: { Authorization: localStorage.getItem('token') }, 
+      })
+      .then(response => {
+        // If the deletion was successful, remove the song from the uploadedSongs array
+        this.uploadedSongs = this.uploadedSongs.filter(song => song.id !== songId);
+        console.log('Song deleted successfully.');
+      })
+      .catch(error => {
+        console.error('Error deleting song:', error);
+      });
     },
-  deleteSong(songId) {
-  axios.delete(`http://localhost:5000/songs/delete_song/${songId}`, {
-    headers: { Authorization: localStorage.getItem('token') }, 
-  })
-  .then(response => {
-    // If the deletion was successful, remove the song from the uploadedSongs array
-    this.uploadedSongs = this.uploadedSongs.filter(song => song.id !== songId);
-    console.log('Song deleted successfully.');
-  })
-  .catch(error => {
-    console.error('Error deleting song:', error);
-  });
-}
+
+    async createPlaylist() {
+      try {
+        const response = await axios.post(`http://localhost:5000/playlists/playlists/${this.user_id}`, {
+          title: this.playlistName,
+          id: this.user_id 
+        }, {
+          headers: { Authorization: localStorage.getItem('token') }, 
+        });
+        console.log('Playlist created successfully:', response.data);
+        this.playlistName = '';
+        this.showPlaylistForm = false;
+      } catch (error) {
+        console.error('Error creating playlist:', error);
+      }
+    },
+
+    async createAlbum() {
+      try {
+        const response = await axios.post(`http://localhost:5000/albums/albums/${this.user_id}`, {
+          title: this.albumName,
+          release_year: this.releaseYear
+        }, {
+          headers: { Authorization: localStorage.getItem('token') }, 
+        });
+        console.log('Album created successfully:', response.data);
+        this.albumName = '';
+        this.showAlbumForm = false;
+      } catch (error) {
+        console.error('Error creating album:', error);
+      }
+    },
 
   }
 };
@@ -106,5 +178,10 @@ export default {
   border: 1px solid #ccc;
   padding: 10px;
   margin-bottom: 10px;
+}
+.playlist-form,
+.album-form {
+  margin-top: 20px;
+  cursor: pointer;
 }
 </style>

@@ -26,7 +26,7 @@ class PlaylistApi(Resource):
         playlist = Playlist(title=title, user_id=id)
         db.session.add(playlist)
         db.session.commit()
-        return playlist, 201
+        return {'message': 'Playlist created'}, 201
     
     @ns_playlist.marshal_with(playlist_output_model)
     def delete(self, id):

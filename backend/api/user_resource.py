@@ -38,19 +38,20 @@ class UserApi(Resource):
         return user
 
 #----------------------------------/users/<string:id>/playlists-------------------------------#
-@ns_user.route('/users/<string:id>/playlists')
+@ns_user.route('/users/playlists')
 class UserPlaylistApi(Resource):
     @ns_user.marshal_with(playlist_output_model)
-    def get(self, id):
-        playlists = Playlist.query.filter_by(user_id=id).all()
+    def get(self):
+        playlists = Playlist.query.filter_by(user_id=current_user.id).all()
         return playlists, 200
 
 #----------------------------------/users/<string:id>/albums-------------------------------#
-@ns_user.route('/users/<string:id>/albums')
+@ns_user.route('/users/albums')
 class UserAlbumApi(Resource):
+    @auth_required('token')
     @ns_user.marshal_with(album_output_model)
-    def get(self, id):
-        albums = Album.query.filter_by(user_id=id).all()
+    def get(self):
+        albums = Album.query.filter_by(user_id=current_user.id).all()
         return albums, 200
 
 #----------------------------------/users/<string:id>/songs-------------------------------#  
