@@ -1,31 +1,43 @@
 <template>
   <div>
-    <h1>User Dashboard</h1>
+
+    <h1>{{ role }} Dashboard</h1>
     <div class="user-info">
-      <p>Welcome, {{ username }}</p>
-      <!-- Other user information display -->
+      <p>Welcome, {{ email }}[{{ role }}]</p>
+      <h3 v-if="role === 'user'" @click="registerAsCreator">[Register as creator]</h3>
     </div>
-    <div class="actions">
-      <router-link to="/upload_song">Upload Song</router-link>
-      <!-- Other actions or links for the user -->
-    </div>
-    <div class="uploaded-songs">
-      <h2 @click.prevent="toggleUploadedSongs">Your Uploaded Songs</h2>
-      <ul v-if="showUploadedSongs">
-        <li v-for="song in uploadedSongs" :key="song.id">
+
+    <!-- Suggested Songs -->
+    <div class="suggested-songs">
+      <h2>Suggested Songs</h2>
+      <ul>
+        <li v-for="song in suggestedSongs" :key="song.id">
           <div class="song-details">
             <h3>{{ song.title }}</h3>
             <p><strong>Artist:</strong> {{ song.artist }}</p>
             <p><strong>Genre:</strong> {{ song.genre }}</p>
             <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
             <!-- Display other song details as needed -->
-            <div>
-              <button @click="deleteSong(song.id)">Delete</button>
+            <div class="rating">
+              <input type="radio" v-model="song.rating" value="1"> 1
+              <input type="radio" v-model="song.rating" value="2"> 2
+              <input type="radio" v-model="song.rating" value="3"> 3
+              <input type="radio" v-model="song.rating" value="4"> 4
+              <input type="radio" v-model="song.rating" value="5"> 5
             </div>
+            <button @click="rateSong(song.id, parseInt(song.rating))">Rate</button>
+            <button @click="addToPlaylist(song.id)">Add to Playlist</button>
           </div>
         </li>
       </ul>
     </div>
+
+
+    <!-- Upload Song Form -->
+    <div class="actions">
+      <h2><router-link to="/upload_song">Upload Song</router-link></h2>
+    </div>
+    
     
     <!-- Create Playlist Form -->
     <div class="playlist-form" @click="togglePlaylistForm">
@@ -55,6 +67,25 @@
       </form>
     </div>
 
+    <!-- Uploaded Songs -->
+    <div class="uploaded-songs">
+      <h2 @click.prevent="toggleUploadedSongs">Your Uploaded Songs</h2>
+      <ul v-if="showUploadedSongs">
+        <li v-for="song in uploadedSongs" :key="song.id">
+          <div class="song-details">
+            <h3>{{ song.title }}</h3>
+            <p><strong>Artist:</strong> {{ song.artist }}</p>
+            <p><strong>Genre:</strong> {{ song.genre }}</p>
+            <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
+            <!-- Display other song details as needed -->
+            <div>
+              <button @click="deleteSong(song.id)">Delete</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
     <!-- Your Albums -->
     <div class="your-albums">
       <h2 @click.prevent="toggleYourAlbums">Your Albums</h2>
@@ -65,6 +96,8 @@
             <p><strong>Release Year:</strong> {{ album.release_year }}</p>
             <!-- Display other album details as needed -->
           </div>
+          <button @click="deleteAlbum(album.id)">Delete</button>
+          <button @click="editAlbum(album.id)">Edit</button>
         </li>
       </ul>
     </div>
@@ -79,6 +112,8 @@
             <h3>{{ playlist.title }}</h3>
             <!-- Display other playlist details as needed -->
           </div>
+          <button @click="deletePlaylist(playlist.id)">Delete</button>
+          <button @click="editPlaylist(playlist.id)">Edit</button>
         </li>
       </ul>
     </div>
@@ -87,15 +122,18 @@
 </template>
 
 <script>
+
 import axios from 'axios'; 
 export default {
   data() {
     return {
       username: '',
       user_id : '',
+      role: '',
       uploadedSongs: [],
       yourAlbums: [],
       yourPlaylists: [],
+      suggestedSongs: [],
       showUploadedSongs: false,
       showPlaylistForm: false,
       showAlbumForm: false,
@@ -110,10 +148,12 @@ export default {
     this.fetchUploadedSongs();
     this.fetchYourAlbums();
     this.fetchYourPlaylists();
+    this.fetchSongs();
   },
   mounted() {    
-    this.username = localStorage.getItem('email') || '';
+    this.email = localStorage.getItem('email') || '';
     this.user_id = localStorage.getItem('id') || '';
+    this.role = localStorage.getItem('role') || '';
   },
   methods: {
     toggleUploadedSongs(){
@@ -228,12 +268,104 @@ export default {
       }
     },
 
+    async deleteAlbum(albumId) {
+      axios.delete(`http://localhost:5000/albums/albums/${albumId}`, {
+        headers: { Authorization: localStorage.getItem('token') }, 
+      })
+      .then(response => {
+        // If the deletion was successful, remove the album from the yourAlbums array
+        this.yourAlbums = this.yourAlbums.filter(album => album.id !== albumId);
+        console.log('Album deleted successfully.');
+
+        this.fetchYourAlbums();
+      })
+      .catch(error => {
+        console.error('Error deleting album:', error);
+      });
+    },
+
+    async deletePlaylist(playlistId) {
+      axios.delete(`http://localhost:5000/playlists/playlists/${playlistId}`, {
+        headers: { Authorization: localStorage.getItem('token') }, 
+      })
+      .then(response => {
+        // If the deletion was successful, remove the playlist from the yourPlaylists array
+        this.yourPlaylists = this.yourPlaylists.filter(playlist => playlist.id !== playlistId);
+        console.log('Playlist deleted successfully.');
+        
+        this.fetchYourPlaylists();
+      })
+      .catch(error => {
+        console.error('Error deleting playlist:', error);
+      });
+    },
+
+    // registerAsCreator()  
+    async registerAsCreator() {
+      try {
+        const response = await axios.put(`http://localhost:5000/users/users/${this.user_id}`, {
+          id: this.user_id
+        }, {
+          headers: { Authorization: localStorage.getItem('token') }, 
+        });
+        console.log('User registered as creator successfully:', response.data);
+        
+        localStorage.setItem('role', 'creator');
+        window.location.reload();
+
+      } catch (error) {
+        console.error('Error registering as creator:', error);
+      }
+    },
+
+    async fetchSongs() {
+      try {
+        const response = await axios.get('http://localhost:5000/songs/songs', {
+          headers: { Authorization: localStorage.getItem('token') }, 
+        })
+        this.suggestedSongs = response.data;
+        console.log('Songs:', this.songs);
+      } catch (error) {
+        console.error('Error fetching songs:', error);
+      }
+    },
+
+    async rateSong(songId, rating) {
+      try {
+        const response = await axios.post(`http://localhost:5000/songs/rate_song`, {
+          rating: rating,
+          song_id: songId
+        }, {
+          headers: { Authorization: localStorage.getItem('token') }, 
+        });
+        console.log('Song rated successfully:', response.data);
+      } catch (error) {
+        console.error('Error rating song:', error);
+      }
+    },
+
+  //   async getSongRating(songId) {
+  //     try {
+  //       const response = await axios.get(`http://localhost:5000/songs/get_rating/${songId}`, {
+  //         headers: { Authorization: localStorage.getItem('token') }, 
+  //       });
+  //       const songRating = response.data;
+  //       console.log('Song rating:', songRating);
+  //       this.$set(this.songRatings, songId, songRating);
+  //     } catch (error) {
+  //       console.error('Error fetching song rating:', error);
+  //   }
+
+  // },
+
   }
+
 };
+
 </script>
 
-<style scoped>
 
+<style scoped>
 </style>
 
 

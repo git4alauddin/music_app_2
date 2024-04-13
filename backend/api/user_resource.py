@@ -75,3 +75,4 @@ class UsersListApi(Resource):
     def get(self):
         user = User.query.all()
         return user, 200
+    

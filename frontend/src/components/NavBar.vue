@@ -49,7 +49,8 @@ const links = computed(() => {
       return [
         { name: 'Home', path: '/' },
         { name: 'Admin Log In', path: '/admin_login' },
-        { name: 'User Log In', path: '/user_login' }
+        { name: 'User Log In', path: '/user_login' },
+        { name: 'Dashboard', path: '/dashboard' }
       ]
     case 'user_login':
       return [
@@ -67,14 +68,15 @@ const links = computed(() => {
         { name: 'Home', path: '/' }
       ]
     
-    case 'admin_login':
+    case 'user_dash':
       return [
-        { name: 'Home', path: '/' }
+        { name: 'Home', path: '/' },
+        {name: 'Dashboard', path: '/dashboard'}
       ]
     
 
-    case 'admin_dash':
-      return [{ name: 'Home', path: '/' }]
+    case 'upload_song':
+      return [{ name: 'Dashboard', path: '/dashboard' }]
 
     default:
       return []

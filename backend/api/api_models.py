@@ -73,6 +73,12 @@ user_input_model = api.model("UserInput", {
     "id": fields.String(required=True, description="User ID")
 })
 
+# rating
+rating_input_model = api.model("RatingInput", {
+    "value": fields.Integer,
+    "song_id": fields.String
+})
+
 
 
 

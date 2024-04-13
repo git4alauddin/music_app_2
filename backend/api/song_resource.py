@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 import os
 from flask import current_app
 from extensions.extension import db
-from models.song_model import Song, SongFile
+from models.song_model import Song, SongFile, Rating
 import random
 
 ns_song = Namespace('songs', description='Song related operations')
@@ -104,6 +104,50 @@ class DeleteSongApi(Resource):
         else:
             return {'message': 'Song not found'}, 404
 
+
+@ns_song.route('/rate_song')
+class RateSongApi(Resource):
+    def post(self):
+        song_id = request.json.get('song_id')
+        rating = request.json.get('rating')
+        user_id = current_user.id
+
+        song = Song.query.get(song_id)
+        if song:
+            existing_rating = Rating.query.filter_by(song_id=song_id, user_id=user_id).first()
+
+            if existing_rating:
+                existing_rating.value = rating
+            else:
+                new_rating = Rating(
+                    value=rating,
+                    song_id=song_id,
+                    user_id=user_id
+                )
+                db.session.add(new_rating)
+            
+            if song:
+                total_rating = sum(rating.value for rating in song.ratings)
+                avg_rating = total_rating / len(song.ratings)
+                song.average_rating = round(avg_rating, 1)
+
+            db.session.commit()
+
+            return {'message': 'Rating added successfully'}, 201
+
+
+@ns_song.route('/get_rating/<string:song_id>')
+class GetRatingsApi(Resource):
+    def get(self, song_id):
+        song = Song.query.get(song_id)
+        if song:
+            ratings = [rating.value for rating in song.ratings]
+            if len(ratings) == 0:
+                return {'rating': 0}, 200
+            rating = sum(ratings)//len(ratings)
+            return {'rating': rating}, 200
+        else:
+            return {'message': 'Song not found'}, 404
 
 @ns_song.route('/songs')
 class SongListApi(Resource):
