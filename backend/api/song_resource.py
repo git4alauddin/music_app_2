@@ -155,3 +155,17 @@ class SongListApi(Resource):
     def get(self):
         songs = Song.query.all()
         return songs, 200
+    
+
+@ns_song.route('/songs/flag_song/<string:song_id>')
+class FlagSongApi(Resource):
+    @auth_required('token')
+    def get(self, song_id):
+        song = Song.query.get(song_id)
+        if song:
+            song.is_flagged = True
+            db.session.commit()
+            return {'message': 'Song flagged successfully'}, 200
+        else:
+            return {'message': 'Song not found'}, 404
+        

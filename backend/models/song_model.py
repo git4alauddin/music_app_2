@@ -16,6 +16,7 @@ class Song(db.Model):
     creator_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
     average_rating = db.Column(db.Float, default=0.0)
     ratings = db.relationship('Rating', backref='song', lazy=True)
+    is_flagged = db.Column(db.Boolean, default=False)
 
 
 # song_files

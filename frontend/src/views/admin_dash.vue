@@ -125,30 +125,48 @@
   
       async blacklistSong(songId) {
         try {
-          // Implement your API call to blacklist song by songId
-          console.log('Blacklisting song:', songId);
+          const response = await axios.get(`http://localhost:5000/songs/songs/flag_song/${songId}`, {
+            headers: { Authorization: localStorage.getItem('token') },
+          })
+          console.log('Song blacklisted successfully:', response.data);
         } catch (error) {
           console.error('Error blacklisting song:', error);
         }
       },
   
-      async deleteAlbum(albumId) {
-        try {
-          // Implement your API call to delete album by albumId
-          console.log('Deleting album:', albumId);
-        } catch (error) {
-          console.error('Error deleting album:', error);
-        }
-      },
   
-      async deletePlaylist(playlistId) {
-        try {
-          // Implement your API call to delete playlist by playlistId
-          console.log('Deleting playlist:', playlistId);
-        } catch (error) {
-          console.error('Error deleting playlist:', error);
-        }
-      },
+    async deleteAlbum(albumId) {
+      axios.delete(`http://localhost:5000/albums/albums/${albumId}`, {
+        headers: { Authorization: localStorage.getItem('token') }, 
+      })
+      .then(response => {
+        // If the deletion was successful, remove the album from the yourAlbums array
+        this.yourAlbums = this.yourAlbums.filter(album => album.id !== albumId);
+        console.log('Album deleted successfully.');
+
+        this.fetchYourAlbums();
+      })
+      .catch(error => {
+        console.error('Error deleting album:', error);
+      });
+    },
+    
+
+    async deletePlaylist(playlistId) {
+      axios.delete(`http://localhost:5000/playlists/playlists/${playlistId}`, {
+        headers: { Authorization: localStorage.getItem('token') }, 
+      })
+      .then(response => {
+        // If the deletion was successful, remove the playlist from the yourPlaylists array
+        this.yourPlaylists = this.yourPlaylists.filter(playlist => playlist.id !== playlistId);
+        console.log('Playlist deleted successfully.');
+        
+        this.fetchYourPlaylists();
+      })
+      .catch(error => {
+        console.error('Error deleting playlist:', error);
+      });
+    },
   
       toggleUsers() {
         this.showUsers = !this.showUsers;
