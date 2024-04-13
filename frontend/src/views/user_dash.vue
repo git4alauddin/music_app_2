@@ -105,18 +105,24 @@
 
     <!-- Your Playlists -->
     <div class="your-playlists">
-      <h2 @click.prevent="toggleYourPlaylists">Your Playlists</h2>
-      <ul v-if="showYourPlaylists">
-        <li v-for="playlist in yourPlaylists" :key="playlist.id">
-          <div class="playlist-details">
-            <h3 @click="navigateToPlaylist(playlist.id, playlist.title)">{{ playlist.title }}</h3>
-            <!-- Display other playlist details as needed -->
-          </div>
-          <button @click="deletePlaylist(playlist.id)">Delete</button>
-          <button @click="editPlaylist(playlist.id)">Edit</button>
-        </li>
-      </ul>
-    </div>
+    <h2 @click.prevent="toggleYourPlaylists">Your Playlists</h2>
+    <ul v-if="showYourPlaylists">
+      <li v-for="playlist in yourPlaylists" :key="playlist.id">
+        <div class="playlist-details">
+          <h3 @click="navigateToPlaylist(playlist.id, playlist.title)">
+            {{ playlist.title }}
+          </h3>
+          <!-- Display other playlist details as needed -->
+        </div>
+        <button @click="deletePlaylist(playlist.id)">Delete</button>
+        <button @click="togglePlaylistEditForm(playlist)">Edit</button>
+        <form v-if="playlist.id === editingPlaylistId" @submit.prevent="submitPlaylistEditForm">
+          <input type="text" v-model="editedPlaylistTitle" placeholder="Enter new title" />
+          <button type="submit">Save</button>
+        </form>
+      </li>
+    </ul>
+  </div>
 
   </div>
 </template>
@@ -142,6 +148,9 @@ export default {
       playlistName: '',
       albumName: '',
       releaseYear: '',
+
+      editingPlaylistId: null,
+      editedPlaylistTitle: '',
     };
   },
   created() {
@@ -353,6 +362,36 @@ export default {
 
   navigateToAlbum(id, title) {
     this.$router.push({ name: 'album', params: { id: id, title: title }});
+  },
+
+  // ----------------------------playlist------------------------------- //
+
+  togglePlaylistEditForm(playlist) {
+  if (playlist && playlist.id) {
+    this.editingPlaylistId = playlist.id;
+    this.editedPlaylistTitle = playlist.title;
+  } else {
+    console.error('Invalid playlist:', playlist);
+  }
+},
+
+
+  async submitPlaylistEditForm() {
+    axios.put(`http://localhost:5000/playlists/playlists/${this.editingPlaylistId}`, {
+      id: this.editingPlaylistId,
+      title: this.editedPlaylistTitle
+    }, {
+      headers: { Authorization: localStorage.getItem('token') }, 
+    })
+    .then(response => {
+      console.log('Playlist updated successfully:', response.data);
+      this.editingPlaylistId = null;
+      this.editedPlaylistTitle = null;
+      this.fetchYourPlaylists();
+    })
+    .catch(error => {
+      console.error('Error updating playlist:', error);
+    });
   },
 
   }

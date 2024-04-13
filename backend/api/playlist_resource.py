@@ -34,6 +34,18 @@ class PlaylistApi(Resource):
         db.session.delete(playlist)
         db.session.commit()
         return Playlist.query.get(id), 204
+    
+    @ns_playlist.expect(playlist_input_model)
+    @ns_playlist.marshal_with(playlist_output_model)
+    def put(self, id):
+        playlist = Playlist.query.get(id)
+        title = request.json.get('title')
+        if title:
+            playlist.title = title
+            db.session.commit()
+            return playlist, 200
+        else:
+            return {'error': 'No title provided'}, 400
 
 #----------------------------------/playlists/<string:id>/songs-------------------------------#
 @ns_playlist.route('/playlists/<string:id>/songs')
