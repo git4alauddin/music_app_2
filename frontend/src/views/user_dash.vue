@@ -87,20 +87,28 @@
     </div>
 
     <!-- Your Albums -->
+    <div>
+    <!-- Your Albums -->
     <div class="your-albums">
       <h2 @click.prevent="toggleYourAlbums">Your Albums</h2>
       <ul v-if="showYourAlbums">
         <li v-for="album in yourAlbums" :key="album.id">
           <div class="album-details">
             <h3 @click="navigateToAlbum(album.id, album.title)">{{ album.title }}</h3>
-            <p><strong>Release Year:</strong> {{ album.release_year }}</p>
+            <p><strong>Release Year:</strong> {{ album.releaseYear }}</p>
             <!-- Display other album details as needed -->
           </div>
           <button @click="deleteAlbum(album.id)">Delete</button>
-          <button @click="editAlbum(album.id)">Edit</button>
+          <button @click="toggleAlbumEditForm(album)">Edit</button>
+          <form v-if="album.id === editingAlbumId" @submit.prevent="submitAlbumEditForm">
+            <input type="text" v-model="editedAlbumTitle" placeholder="Enter new title" />
+            <input type="number" v-model="editedAlbumReleaseYear" placeholder="Enter new release year" />
+            <button type="submit">Save</button>
+          </form>
         </li>
       </ul>
     </div>
+  </div>
 
 
     <!-- Your Playlists -->
@@ -151,6 +159,10 @@ export default {
 
       editingPlaylistId: null,
       editedPlaylistTitle: '',
+
+      editingAlbumId: null,
+      editedAlbumTitle: '',
+      editedAlbumReleaseYear: '',
     };
   },
   created() {
@@ -375,6 +387,16 @@ export default {
   }
 },
 
+  toggleAlbumEditForm(album) {
+  if (album && album.id) {
+    this.editingAlbumId = album.id;
+    this.editedAlbumTitle = album.title;
+    this.editedAlbumReleaseYear = album.releaseYear;
+  } else {
+    console.error('Invalid album:', album);
+  } 
+  },
+
 
   async submitPlaylistEditForm() {
     axios.put(`http://localhost:5000/playlists/playlists/${this.editingPlaylistId}`, {
@@ -391,6 +413,26 @@ export default {
     })
     .catch(error => {
       console.error('Error updating playlist:', error);
+    });
+  },
+
+  async submitAlbumEditForm() {
+    axios.put(`http://localhost:5000/albums/albums/${this.editingAlbumId}`, {
+      id: this.editingAlbumId,
+      title: this.editedAlbumTitle,
+      release_year: this.editedAlbumReleaseYear
+    }, {
+      headers: { Authorization: localStorage.getItem('token') }, 
+    })
+    .then(response => {
+      console.log('Album updated successfully:', response.data);
+      this.editingAlbumId = null;
+      this.editedAlbumTitle = null;
+      this.editedAlbumReleaseYear = null;
+      this.fetchYourAlbums();
+    })
+    .catch(error => {
+      console.error('Error updating album:', error);
     });
   },
 

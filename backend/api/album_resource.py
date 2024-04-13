@@ -35,6 +35,17 @@ class AlbumApi(Resource):
         db.session.delete(album)
         db.session.commit()
         return Album.query.get(id), 204
+    
+    @ns_album.expect(album_input_model)
+    @ns_album.marshal_with(album_output_model)
+    def put(self, id):
+        album = Album.query.get(id)
+        title = request.json.get('title')
+        release_year = request.json.get('release_year')
+        album.title = title
+        album.release_year = release_year
+        db.session.commit()
+        return album, 200
 
 #------------------------------------/albums/<string:id>/songs---------------------------------#
 @ns_album.route('/albums/<string:id>/songs')
