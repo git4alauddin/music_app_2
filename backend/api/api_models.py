@@ -15,6 +15,7 @@ user_register_model = api.model("UserRegister", {
     "password": fields.String
 })
 
+
 # songs
 upload_song_model = api.model("UploadSong", {
     "title": fields.String,
@@ -68,7 +69,8 @@ album_input_model = api.model("AlbumInput", {
 user_output_model = api.model("User", {
     "id": fields.String,
     "username": fields.String,
-    "role": fields.String
+    "role": fields.String,
+    "email": fields.String
 })
 
 user_input_model = api.model("UserInput", {

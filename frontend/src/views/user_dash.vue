@@ -1,52 +1,48 @@
 <template>
   <div>
-
     <h1>{{ role }} Dashboard</h1>
     <div class="user-info">
-      <p>Welcome, {{ email }}[{{ role }}]</p>
+      <p>Welcome, {{ email }} [{{ role }}]</p>
       <h3 v-if="role === 'user'" @click="registerAsCreator">[Register as creator]</h3>
     </div>
 
-<!-- Suggested Songs -->
-<div class="suggested-songs">
-  <h2>Suggested Songs</h2>
-  <div class="song-container">
-    <div v-for="song in suggestedSongs" :key="song.id" class="song-details">
-      <h3>{{ song.title }} [{{  song.average_rating }}]</h3>
-      <p><strong>Artist:</strong> {{ song.artist }}</p>
-      <p><strong>Genre:</strong> {{ song.genre }}</p>
-      <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
-      <!-- Display other song details as needed -->
-      <div class="rating">
-        <input type="radio" v-model="song.rating" value="1"> 1
-        <input type="radio" v-model="song.rating" value="2"> 2
-        <input type="radio" v-model="song.rating" value="3"> 3
-        <input type="radio" v-model="song.rating" value="4"> 4
-        <input type="radio" v-model="song.rating" value="5"> 5
+    <!-- Suggested Songs -->
+    <div class="suggested-songs">
+      <h2>Suggested Songs</h2>
+      <div class="song-container">
+        <div v-for="song in suggestedSongs" :key="song.id" class="song-details">
+          <h3>{{ song.title }} [{{  song.average_rating }}]</h3>
+          <p><strong>Artist:</strong> {{ song.artist }}</p>
+          <p><strong>Genre:</strong> {{ song.genre }}</p>
+          <button @click="toggleLyrics(song)">Lyrics</button>
+          <p v-if="song.showLyrics"><strong>Lyrics:</strong> {{ song.lyrics }}</p>
+          <div class="rating">
+            <input type="radio" v-model="song.rating" value="1"> 1
+            <input type="radio" v-model="song.rating" value="2"> 2
+            <input type="radio" v-model="song.rating" value="3"> 3
+            <input type="radio" v-model="song.rating" value="4"> 4
+            <input type="radio" v-model="song.rating" value="5"> 5
+          </div>
+          <button @click="rateSong(song.id, parseInt(song.rating))">Rate</button>
+          <button @click="playSong(song.id)">Play</button>
+        </div>
       </div>
-      <button @click="rateSong(song.id, parseInt(song.rating))">Rate</button>
-      <button @click="addToPlaylist(song.id)">Add to Playlist</button>
     </div>
-  </div>
-</div>
-
-
 
     <!-- Upload Song Form -->
     <div class="actions">
       <h2><router-link to="/upload_song">Upload Song</router-link></h2>
     </div>
-    
-    
+
     <!-- Create Playlist Form -->
     <div class="playlist-form" @click="togglePlaylistForm">
       <h2>Create Playlist</h2>
       <form v-if="showPlaylistForm" @submit.prevent="createPlaylist">
         <div class="form-group">
           <label for="playlistName">Playlist Name:</label>
-          <input type="text" id="playlistName" v-model="playlistName" @click.stop required>
+          <input type="text" id="playlistName" v-model="playlistName" required>
         </div>
-        <button type="submit" @click="createPlaylist">Create Playlist</button>
+        <button type="submit">Create Playlist</button>
       </form>
     </div>
 
@@ -56,27 +52,26 @@
       <form v-if="showAlbumForm" @submit.prevent="createAlbum">
         <div class="form-group">
           <label for="albumName">Album Name:</label>
-          <input type="text" id="albumName" v-model="albumName" @click.stop required>
-          </div>
-          <div class="form-group">
-            <label for="releaseYear">Release Year:</label>
-            <input type="number" id="releaseYear" v-model="releaseYear" @click.stop required>
+          <input type="text" id="albumName" v-model="albumName" required>
         </div>
-        <button type="submit" @click="createAlbum">Create Album</button>
+        <div class="form-group">
+          <label for="releaseYear">Release Year:</label>
+          <input type="number" id="releaseYear" v-model="releaseYear" required>
+        </div>
+        <button type="submit">Create Album</button>
       </form>
     </div>
 
-    <!-- Uploaded Songs -->
-    <div class="uploaded-songs">
+    <!-- Uploaded Songs Section -->
+    <div class="section">
       <h2 @click.prevent="toggleUploadedSongs">Your Uploaded Songs</h2>
-      <ul v-if="showUploadedSongs">
-        <li v-for="song in uploadedSongs" :key="song.id">
+      <ul class="uploaded-songs-list" v-if="showUploadedSongs">
+        <li v-for="song in uploadedSongs" :key="song.id" class="uploaded-song">
           <div class="song-details">
             <h3>{{ song.title }}</h3>
             <p><strong>Artist:</strong> {{ song.artist }}</p>
             <p><strong>Genre:</strong> {{ song.genre }}</p>
             <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
-            <!-- Display other song details as needed -->
             <div>
               <button @click="deleteSong(song.id)">Delete</button>
             </div>
@@ -86,51 +81,42 @@
     </div>
 
     <!-- Your Albums -->
-    <div>
-    <!-- Your Albums -->
-    <div class="your-albums">
+    <div class="section">
       <h2 @click.prevent="toggleYourAlbums">Your Albums</h2>
       <ul v-if="showYourAlbums">
         <li v-for="album in yourAlbums" :key="album.id">
           <div class="album-details">
             <h3 @click="navigateToAlbum(album.id, album.title)">{{ album.title }}</h3>
             <p><strong>Release Year:</strong> {{ album.releaseYear }}</p>
-            <!-- Display other album details as needed -->
           </div>
           <button @click="deleteAlbum(album.id)">Delete</button>
           <button @click="toggleAlbumEditForm(album)">Edit</button>
           <form v-if="album.id === editingAlbumId" @submit.prevent="submitAlbumEditForm">
-            <input type="text" v-model="editedAlbumTitle" placeholder="Enter new title" />
-            <input type="number" v-model="editedAlbumReleaseYear" placeholder="Enter new release year" />
+            <input type="text" v-model="editedAlbumTitle" placeholder="Enter new title" required>
+            <input type="number" v-model="editedAlbumReleaseYear" placeholder="Enter new release year" required>
             <button type="submit">Save</button>
           </form>
         </li>
       </ul>
     </div>
-  </div>
-
 
     <!-- Your Playlists -->
-    <div class="your-playlists">
-    <h2 @click.prevent="toggleYourPlaylists">Your Playlists</h2>
-    <ul v-if="showYourPlaylists">
-      <li v-for="playlist in yourPlaylists" :key="playlist.id">
-        <div class="playlist-details">
-          <h3 @click="navigateToPlaylist(playlist.id, playlist.title)">
-            {{ playlist.title }}
-          </h3>
-          <!-- Display other playlist details as needed -->
-        </div>
-        <button @click="deletePlaylist(playlist.id)">Delete</button>
-        <button @click="togglePlaylistEditForm(playlist)">Edit</button>
-        <form v-if="playlist.id === editingPlaylistId" @submit.prevent="submitPlaylistEditForm">
-          <input type="text" v-model="editedPlaylistTitle" placeholder="Enter new title" />
-          <button type="submit">Save</button>
-        </form>
-      </li>
-    </ul>
-  </div>
-
+    <div class="section">
+      <h2 @click.prevent="toggleYourPlaylists">Your Playlists</h2>
+      <ul v-if="showYourPlaylists">
+        <li v-for="playlist in yourPlaylists" :key="playlist.id">
+          <div class="playlist-details">
+            <h3 @click="navigateToPlaylist(playlist.id, playlist.title)">{{ playlist.title }}</h3>
+          </div>
+          <button @click="deletePlaylist(playlist.id)">Delete</button>
+          <button @click="togglePlaylistEditForm(playlist)">Edit</button>
+          <form v-if="playlist.id === editingPlaylistId" @submit.prevent="submitPlaylistEditForm">
+            <input type="text" v-model="editedPlaylistTitle" placeholder="Enter new title" required>
+            <button type="submit">Save</button>
+          </form>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -162,6 +148,8 @@ export default {
       editingAlbumId: null,
       editedAlbumTitle: '',
       editedAlbumReleaseYear: '',
+
+      showLyrics: false
     };
   },
   created() {
@@ -437,6 +425,10 @@ export default {
     });
   },
 
+  toggleLyrics(song) {
+    song.showLyrics = !song.showLyrics;
+  }
+
   }
 
 };
@@ -495,7 +487,7 @@ export default {
 }
 
 .song-details {
-  flex: 0 0 calc(33.33% - 20px); /* Three boxes per row with some margin */
+  flex: 0 0 calc(25% - 20px); /* 4 boxes per row with some margin */
   margin: 10px;
   padding: 15px;
   border: 1px solid #ccc;
@@ -548,6 +540,48 @@ export default {
 
 
 
+/* Style for uploaded songs section */
+.section {
+  margin-top: 20px;
+}
+
+.uploaded-songs-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0;
+}
+
+.uploaded-song {
+  flex: 1 1 calc(25% - 20px);
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.uploaded-song:hover {
+  background-color: #f0f0f0;
+}
+
+.song-details {
+  margin-bottom: 10px;
+}
+
+/* Style for buttons */
+button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
 </style>
 
 
