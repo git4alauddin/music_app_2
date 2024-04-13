@@ -43,6 +43,16 @@ const router = createRouter({
       name: 'creator_dash',
       component: () => import('../views/creator_dash.vue')
     },
+    {
+      path: '/playlist/:id/:title',
+      name: 'playlist',
+      component: () => import('../views/playlist.vue')
+    },
+    {
+      path: '/album/:id/:title',
+      name: 'album',
+      component: () => import('../views/album.vue')
+    }
   ]
 })
 

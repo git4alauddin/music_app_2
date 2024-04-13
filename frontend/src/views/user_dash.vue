@@ -13,7 +13,7 @@
       <ul>
         <li v-for="song in suggestedSongs" :key="song.id">
           <div class="song-details">
-            <h3>{{ song.title }}</h3>
+            <h3>{{ song.title }} </h3>
             <p><strong>Artist:</strong> {{ song.artist }}</p>
             <p><strong>Genre:</strong> {{ song.genre }}</p>
             <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
@@ -109,7 +109,7 @@
       <ul v-if="showYourPlaylists">
         <li v-for="playlist in yourPlaylists" :key="playlist.id">
           <div class="playlist-details">
-            <h3>{{ playlist.title }}</h3>
+            <h3 @click="navigateToPlaylist(playlist.id, playlist.title)">{{ playlist.title }}</h3>
             <!-- Display other playlist details as needed -->
           </div>
           <button @click="deletePlaylist(playlist.id)">Delete</button>
@@ -154,6 +154,8 @@ export default {
     this.email = localStorage.getItem('email') || '';
     this.user_id = localStorage.getItem('id') || '';
     this.role = localStorage.getItem('role') || '';
+
+  
   },
   methods: {
     toggleUploadedSongs(){
@@ -324,7 +326,7 @@ export default {
           headers: { Authorization: localStorage.getItem('token') }, 
         })
         this.suggestedSongs = response.data;
-        console.log('Songs:', this.songs);
+        console.log('Songs:', this.suggestedSongs);
       } catch (error) {
         console.error('Error fetching songs:', error);
       }
@@ -351,12 +353,20 @@ export default {
   //       });
   //       const songRating = response.data;
   //       console.log('Song rating:', songRating);
-  //       this.$set(this.songRatings, songId, songRating);
+  //       return songRating;
   //     } catch (error) {
   //       console.error('Error fetching song rating:', error);
   //   }
 
   // },
+
+
+
+  // ----------------------------------------------------------------------
+
+  navigateToPlaylist(id, title) {
+    this.$router.push({ name: 'playlist', params: { id: id, title: title }});
+  }
 
   }
 

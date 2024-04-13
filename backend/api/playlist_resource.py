@@ -60,7 +60,7 @@ class PlaylistSongApi(Resource):
             if s.id == song_id:
                 song = s
         if song:
-            return song 
+            return song, 200
         else:
             return {"message": "Song not found"}, 404
         
