@@ -25,19 +25,47 @@
   
   </script>
 
-<style>
-.jumbotron {
-  font-family: cursive;
+<style scoped>
+  /* Container */
+  .container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 70vh; /* Make the container full height of the viewport */
+  }
 
-  /* background-image: url('@/assets/BGimg3.jpg'); */
-  background-size: 100% 100%;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-}
-.container {
-  display: flex;
-  justify-content: center;
-  padding-top: 100px;
-}
+  /* Jumbotron */
+  .jumbotron {
+    text-align: center; /* Center the text */
+    max-width: 600px; /* Limit the width of the jumbotron */
+  }
+
+  .jumbotron h1 {
+    color: #333; /* Heading color */
+    margin-bottom: 20px; /* Add some space below the heading */
+  }
+
+  .jumbotron h4 {
+    color: #666; /* Text color */
+  }
+
+  /* Login and Registration Buttons */
+  .btn-primary {
+    background-color: #007bff; /* Button background color */
+    color: #fff; /* Button text color */
+    border: none; /* Remove button border */
+    padding: 10px 20px; /* Add padding to the button */
+    margin-top: 20px; /* Add some space above the buttons */
+    border-radius: 4px; /* Add border radius to the buttons */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+  }
+
+  /* Hover effect for the buttons */
+  .btn-primary:hover {
+    background-color: #0056b3; /* Darker background color on hover */
+  }
 </style>
+
+
   

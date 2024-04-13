@@ -1,28 +1,24 @@
 <template>
-  <nav class="navbar navbar-expand-md">
-    <router-link class="navbar-brand" to="/"
-      ></router-link>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-    >
+  <nav class="navbar">
+    <router-link class="navbar-brand" to="/">
+      <!-- Add your brand logo or text here -->
+      MusicHub
+    </router-link>
+    <button class="navbar-toggler" @click="toggleNav">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav mr-auto"></ul>
-      <ul class="navbar-nav">
-        <li v-for="link in links" :key="link.to" class="nav-item">
-          <router-link class="nav-link" :to="link.path">{{ link.name }} </router-link>
-        </li>
-      </ul>
-      <ul class="navbar-nav">
-        <li v-if="checklogin()" class="nav-item">
-          <button class="nav-link logout-btn" @click="logout">LOG OUT</button>
-        </li>
-      </ul>
-    </div>
+    <ul class="navbar-nav" :class="{ 'show': isNavOpen }">
+      <li v-for="link in links" :key="link.to" class="nav-item">
+        <router-link class="nav-link" :to="link.path">
+          <i :class="link.icon"></i> {{ link.name }}
+        </router-link>
+      </li>
+      <li v-if="checklogin()" class="nav-item">
+        <button class="nav-link logout-btn" @click="logout">
+          <i class="logout-icon"></i> Logout
+        </button>
+      </li>
+    </ul>
   </nav>
 </template>
 <script setup>
@@ -83,21 +79,64 @@ const links = computed(() => {
   }
 })
 </script>
+
+
+
 <style scoped>
 .navbar {
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  background-color: #f8f9fa;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.navbar a {
-  color: green;
+
+.navbar-toggler {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.navbar-toggler-icon {
+  width: 20px;
+  height: 2px;
+  background-color: #333;
+  display: block;
+}
+
+.navbar-nav {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.nav-item {
+  margin-left: 20px;
+}
+
+.nav-link {
+  color: #333;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
 }
 
 .logout-btn {
-  background-color: rgb(240, 168, 132);
-  color: black
-}
-/* on hover */
-.logout-btn:hover {
-  color: red;
+  background-color: transparent;
+  border: none;
   cursor: pointer;
+  color: #333;
+}
+
+.logout-icon {
+  /* Add your logout icon styles here */
+}
+
+.show {
+  display: flex;
 }
 </style>
+
+

@@ -101,20 +101,69 @@ function  uploadSong1() {
 
 </script>
 
-<style>
-.jumbotron {
-  font-family: cursive;
-}
-.container {
-  display: flex;
-  justify-content: center;
-  padding-top: 100px;
+<style scoped>
+/* Upload Song form */
+#m {
+  padding: 20px;
 }
 
-#m {
-  background-image: url('@/assets/BGimg3.jpg');
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: 100% 100%;
+.container {
+  max-width: 600px;
+  margin: 0 auto;
 }
+
+.jumbotron {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow */
+  transition: box-shadow 0.3s ease; /* Smooth transition for box shadow */
+}
+
+.jumbotron:hover {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Darker box shadow on hover */
+}
+
+.jumbotron h1 {
+  color: #333;
+}
+
+.jumbotron h5 {
+  color: #666;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  font-weight: bold;
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+textarea.form-control {
+  height: 100px; /* Adjust textarea height */
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+.btn-primary:hover {
+  background-color: #0056b3; /* Darker color on hover */
+}
+
 </style>

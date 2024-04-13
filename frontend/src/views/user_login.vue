@@ -81,22 +81,63 @@
   }
   </script>
   
-  <style>
-  .jumbotron {
-    /* background-image: url("@/assets/BGimg3.jpg"); */
-    font-family: cursive;
-  }
+  <style scoped>
+  /* Container */
   .container {
     display: flex;
-    justify-content: center;
-    padding-top: 100px;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100vh; /* Make the container full height of the viewport */
+    background-image: url('your-background-image-url.jpg'); /* Set background image */
+    background-size:90%; /* Cover the entire container with the background image */
+    backdrop-filter: blur(10px); /* Apply blur effect to the container */
   }
-  
-  #m {
-    background-image: url('@/assets/BGimg3.jpg');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: 100% 100%;
+
+  /* Jumbotron */
+  .jumbotron {
+    text-align: center; /* Center the text */
+    max-width: 600px; /* Limit the width of the jumbotron */
+    padding: 30px; /* Add padding to the jumbotron */
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    border-radius: 10px; /* Add border radius to the jumbotron */
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3); /* Add box shadow */
   }
-  </style>
+
+  .jumbotron h1 {
+    color: #333; /* Heading color */
+    margin-bottom: 20px; /* Add some space below the heading */
+  }
+
+  .jumbotron h5 {
+    color: #666; /* Text color */
+    margin-bottom: 20px; /* Add some space below the subtitle */
+  }
+
+  /* Form styles */
+  form {
+    margin-top: 20px; /* Add space above the form */
+  }
+
+  .form-group {
+    margin-bottom: 20px; /* Add space below form elements */
+  }
+
+  /* Button styles */
+  .btn-primary {
+    background-color: #007bff; /* Button background color */
+    color: #fff; /* Button text color */
+    border: none; /* Remove button border */
+    padding: 10px 20px; /* Add padding to the button */
+    border-radius: 4px; /* Add border radius to the buttons */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+  }
+
+  /* Hover effect for the buttons */
+  .btn-primary:hover {
+    background-color: #0056b3; /* Darker background color on hover */
+  }
+</style>
+
+
   

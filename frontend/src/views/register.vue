@@ -82,22 +82,71 @@
   }
   </script>
   
-  <style>
-  .jumbotron {
-    /* background-color:rgb(255, 255, 100); */
-    font-family: cursive;
-  }
-  .container {
+  <style scoped>
+  #m {
+    background-image: url('your-background-image-url.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
     display: flex;
     justify-content: center;
-    padding-top: 100px;
+    align-items: center;
   }
-  
-  #m {
-    background-image: url('@/assets/BGimg3.jpg');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: 100% 100%;
+
+  .container {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
   }
-  </style>
+
+  .jumbotron {
+    width: 400px;
+  }
+
+  .jumbotron h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .jumbotron h5 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #666;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group input[type="text"],
+  .form-group input[type="email"],
+  .form-group input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+
+  .form-group button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .form-group button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+</style>
+
   

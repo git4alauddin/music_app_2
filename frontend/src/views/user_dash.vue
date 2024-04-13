@@ -7,30 +7,29 @@
       <h3 v-if="role === 'user'" @click="registerAsCreator">[Register as creator]</h3>
     </div>
 
-    <!-- Suggested Songs -->
-    <div class="suggested-songs">
-      <h2>Suggested Songs</h2>
-      <ul>
-        <li v-for="song in suggestedSongs" :key="song.id">
-          <div class="song-details">
-            <h3>{{ song.title }} [{{  song.average_rating }}]</h3>
-            <p><strong>Artist:</strong> {{ song.artist }}</p>
-            <p><strong>Genre:</strong> {{ song.genre }}</p>
-            <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
-            <!-- Display other song details as needed -->
-            <div class="rating">
-              <input type="radio" v-model="song.rating" value="1"> 1
-              <input type="radio" v-model="song.rating" value="2"> 2
-              <input type="radio" v-model="song.rating" value="3"> 3
-              <input type="radio" v-model="song.rating" value="4"> 4
-              <input type="radio" v-model="song.rating" value="5"> 5
-            </div>
-            <button @click="rateSong(song.id, parseInt(song.rating))">Rate</button>
-            <button @click="addToPlaylist(song.id)">Add to Playlist</button>
-          </div>
-        </li>
-      </ul>
+<!-- Suggested Songs -->
+<div class="suggested-songs">
+  <h2>Suggested Songs</h2>
+  <div class="song-container">
+    <div v-for="song in suggestedSongs" :key="song.id" class="song-details">
+      <h3>{{ song.title }} [{{  song.average_rating }}]</h3>
+      <p><strong>Artist:</strong> {{ song.artist }}</p>
+      <p><strong>Genre:</strong> {{ song.genre }}</p>
+      <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
+      <!-- Display other song details as needed -->
+      <div class="rating">
+        <input type="radio" v-model="song.rating" value="1"> 1
+        <input type="radio" v-model="song.rating" value="2"> 2
+        <input type="radio" v-model="song.rating" value="3"> 3
+        <input type="radio" v-model="song.rating" value="4"> 4
+        <input type="radio" v-model="song.rating" value="5"> 5
+      </div>
+      <button @click="rateSong(song.id, parseInt(song.rating))">Rate</button>
+      <button @click="addToPlaylist(song.id)">Add to Playlist</button>
     </div>
+  </div>
+</div>
+
 
 
     <!-- Upload Song Form -->
@@ -362,6 +361,8 @@ export default {
           headers: { Authorization: localStorage.getItem('token') }, 
         });
         console.log('Song rated successfully:', response.data);
+
+        this.fetchSongs();
       } catch (error) {
         console.error('Error rating song:', error);
       }
@@ -442,8 +443,116 @@ export default {
 
 </script>
 
-
 <style scoped>
+  /* Dashboard Heading */
+  h1 {
+    text-align: center;
+    color: #333; 
+    margin-bottom: 20px; 
+  }
+
+  
+  .user-info {
+    text-align: center; 
+    margin-bottom: 30px; 
+  }
+
+  .user-info p {
+    color: #666; 
+  }
+
+  
+  .user-info h3 {
+    cursor: pointer;
+    color: #007bff; 
+    transition: color 0.3s ease; 
+  }
+
+  
+  .user-info h3:hover {
+    color: #0056b3; 
+  }
+
+
+
+
+
+
+/* Suggested Songs section */
+.suggested-songs {
+  margin-bottom: 30px;
+}
+
+.suggested-songs h2 {
+  color: #333;
+}
+
+/* Song details */
+.song-container {
+  display: flex;
+  flex-wrap: wrap;
+  
+}
+
+.song-details {
+  flex: 0 0 calc(33.33% - 20px); /* Three boxes per row with some margin */
+  margin: 10px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: all 0.3s ease; /* Smooth transition on hover */
+  background-color: rgb(250, 239, 239);
+}
+
+.song-details:hover {
+  transform: translateY(-5px); /* Move the box up slightly on hover */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
+}
+
+.song-details h3 {
+  margin-bottom: 5px;
+}
+
+.song-details p {
+  color: #666;
+}
+
+.rating {
+  margin-top: 5px;
+
+}
+
+.rating input[type="radio"] {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+/* Button styles */
+.song-details button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  margin-top: 5px; /* Add some space between buttons */
+  margin-right:10px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+.song-details button:hover {
+  background-color: #0056b3; /* Darker color on hover */
+}
+
+
+
+
 </style>
+
+
+
+
+
 
 
