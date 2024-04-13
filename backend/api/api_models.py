@@ -20,7 +20,8 @@ upload_song_model = api.model("UploadSong", {
     "title": fields.String,
     "artist": fields.String,
     "genre": fields.String,
-    "lyrics": fields.String
+    "lyrics": fields.String,
+    "audio_file": fields.Raw
 })
 
 output_all_songs = api.model("AllSongs", {

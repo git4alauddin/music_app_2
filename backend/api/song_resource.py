@@ -24,16 +24,16 @@ class UploadSongApi(Resource):
         lyrics = request.json.get('lyrics')
         
 
-        # audio_file = request.files.get('audio_file')
+        audio_file = request.files.get('audio_file')
         random_suffix = random.randint(0, 10000)
 
-        # original_filename = secure_filename(audio_file.filename)
-        # file_extension = original_filename.rsplit('.', 1)[1]
+        original_filename = secure_filename(audio_file.filename)
+        file_extension = original_filename.rsplit('.', 1)[1]
         file_extension = 'mp3'
         new_filename = f'{artist}_{title}_{random_suffix}.{file_extension}'
 
         audio_file_path = os.path.join(current_app.config['SONG_UPLOAD_FOLDER'], new_filename)
-        # audio_file.save(audio_file_path)
+        audio_file.save(audio_file_path)
 
         # song_object
         song = Song(
