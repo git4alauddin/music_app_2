@@ -12,10 +12,9 @@
       <ul>
         <li v-for="song in playlistSongs" :key="song.id">
           <div class="song-details">
-            <h3>{{ song.title }}</h3>
-            <p><strong>Artist:</strong> {{ song.artist }}</p>
-            <p><strong>Genre:</strong> {{ song.genre }}</p>
-            <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
+            <h3>{{ song.title }} [{{ song.genre }}]</h3>
+            
+            <button @click="removeFromPlaylist(song.id)">Delete</button>
           </div>
         </li>
       </ul>
@@ -30,7 +29,7 @@
       <ul>
         <li v-for="song in suggestedSongs" :key="song.id">
           <div class="song-details">
-            <h3>{{ song.title }} </h3>
+            <h3>{{ song.title }} [{{  song.average_rating }}] </h3>
             <p><strong>Artist:</strong> {{ song.artist }}</p>
             <p><strong>Genre:</strong> {{ song.genre }}</p>
             <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
@@ -44,7 +43,6 @@
             </div>
             <button @click="rateSong(song.id, parseInt(song.rating))">Rate</button>
             <button @click="addToPlaylist(song.id)">Add to Playlist</button>
-            <button @click="deleteSong(song.id)">Delete</button>
           </div>
         </li>
       </ul>
@@ -108,6 +106,20 @@ export default {
       } catch (error) {
         console.error('Error fetching playlist songs:', error);
       }
+    },
+
+    async removeFromPlaylist(songId) {
+      try {
+        const response = await axios.delete(`http://localhost:5000/playlists/playlists/${this.$route.params.id}/songs/${songId}`, {
+          headers: { Authorization: localStorage.getItem('token') }, 
+        })
+        console.log('Song removed from playlist:', response.data);
+
+        window.location.reload();
+        
+      } catch (error) {
+        console.error('Error removing song from playlist:', error);
+      } 
     },
   }     
 }

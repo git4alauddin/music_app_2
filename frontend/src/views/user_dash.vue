@@ -13,7 +13,7 @@
       <ul>
         <li v-for="song in suggestedSongs" :key="song.id">
           <div class="song-details">
-            <h3>{{ song.title }} </h3>
+            <h3>{{ song.title }} [{{  song.average_rating }}]</h3>
             <p><strong>Artist:</strong> {{ song.artist }}</p>
             <p><strong>Genre:</strong> {{ song.genre }}</p>
             <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
@@ -92,7 +92,7 @@
       <ul v-if="showYourAlbums">
         <li v-for="album in yourAlbums" :key="album.id">
           <div class="album-details">
-            <h3>{{ album.title }}</h3>
+            <h3 @click="navigateToAlbum(album.id, album.title)">{{ album.title }}</h3>
             <p><strong>Release Year:</strong> {{ album.release_year }}</p>
             <!-- Display other album details as needed -->
           </div>
@@ -346,27 +346,14 @@ export default {
       }
     },
 
-  //   async getSongRating(songId) {
-  //     try {
-  //       const response = await axios.get(`http://localhost:5000/songs/get_rating/${songId}`, {
-  //         headers: { Authorization: localStorage.getItem('token') }, 
-  //       });
-  //       const songRating = response.data;
-  //       console.log('Song rating:', songRating);
-  //       return songRating;
-  //     } catch (error) {
-  //       console.error('Error fetching song rating:', error);
-  //   }
-
-  // },
-
-
-
-  // ----------------------------------------------------------------------
 
   navigateToPlaylist(id, title) {
     this.$router.push({ name: 'playlist', params: { id: id, title: title }});
-  }
+  },
+
+  navigateToAlbum(id, title) {
+    this.$router.push({ name: 'album', params: { id: id, title: title }});
+  },
 
   }
 
