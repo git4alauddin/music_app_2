@@ -27,10 +27,10 @@
             <textarea class="form-control" id="lyrics" v-model="song.lyrics" required></textarea>
           </div>
 
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label for="file">Upload Song File</label>
             <input type="file" class="form-control-file" id="file" required>
-          </div>
+          </div> -->
 
           <button type="submit" class="btn btn-primary">Upload</button>
         </form>

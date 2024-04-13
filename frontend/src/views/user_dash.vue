@@ -40,9 +40,9 @@
       <form v-if="showPlaylistForm" @submit.prevent="createPlaylist">
         <div class="form-group">
           <label for="playlistName">Playlist Name:</label>
-          <input type="text" id="playlistName" v-model="playlistName" required>
+          <input type="text" id="playlistName" v-model="playlistName" @click.stop required>
         </div>
-        <button type="submit">Create Playlist</button>
+        <button type="submit" @click="createPlaylist">Create Playlist</button>
       </form>
     </div>
 
@@ -52,33 +52,16 @@
       <form v-if="showAlbumForm" @submit.prevent="createAlbum">
         <div class="form-group">
           <label for="albumName">Album Name:</label>
-          <input type="text" id="albumName" v-model="albumName" required>
+          <input type="text" id="albumName" v-model="albumName" @click.stop required>
+          </div>
+          <div class="form-group">
+            <label for="releaseYear">Release Year:</label>
+            <input type="number" id="releaseYear" v-model="releaseYear" @click.stop required>
         </div>
-        <div class="form-group">
-          <label for="releaseYear">Release Year:</label>
-          <input type="number" id="releaseYear" v-model="releaseYear" required>
-        </div>
-        <button type="submit">Create Album</button>
+        <button type="submit" @click="createAlbum">Create Album</button>
       </form>
     </div>
 
-    <!-- Uploaded Songs Section -->
-    <div class="section">
-      <h2 @click.prevent="toggleUploadedSongs">Your Uploaded Songs</h2>
-      <ul class="uploaded-songs-list" v-if="showUploadedSongs">
-        <li v-for="song in uploadedSongs" :key="song.id" class="uploaded-song">
-          <div class="song-details">
-            <h3>{{ song.title }}</h3>
-            <p><strong>Artist:</strong> {{ song.artist }}</p>
-            <p><strong>Genre:</strong> {{ song.genre }}</p>
-            <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
-            <div>
-              <button @click="deleteSong(song.id)">Delete</button>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
 
     <!-- Your Albums -->
     <div class="section">
@@ -117,8 +100,28 @@
         </li>
       </ul>
     </div>
+
+    <!-- Uploaded Songs Section -->
+    <div class="section">
+      <h2 @click.prevent="toggleUploadedSongs">Your Uploaded Songs</h2>
+      <ul class="uploaded-songs-list" v-if="showUploadedSongs">
+        <li v-for="song in uploadedSongs" :key="song.id" class="uploaded-song">
+          <div class="song-details">
+            <h3>{{ song.title }}</h3>
+            <p><strong>Artist:</strong> {{ song.artist }}</p>
+            <p><strong>Genre:</strong> {{ song.genre }}</p>
+            <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
+            <div>
+              <button @click="deleteSong(song.id)">Delete</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
+
+
 
 <script>
 

@@ -64,4 +64,11 @@ export default {
 .player .add_to_playlist a:hover {
   background-color: #45a049;
 }
+
+/* # give padding from top so that it will not overlap the contents at bottom */
+.player .audio_player {
+  padding-top: 20px;
+}
+/* its not working */
+
 </style>
