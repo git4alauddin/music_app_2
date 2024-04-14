@@ -11,6 +11,18 @@
       <h3 v-if="role === 'user'" @click="registerAsCreator">[Register as creator]</h3>
     </div>
 
+      <!-- creator stats -->
+      <div>
+      <h2>Statistics</h2>
+      <div v-if="loading">Loading...</div>
+        <div v-else>
+            <p>Total Song: {{ creatorStats.total_songs }}</p>
+            <p>Total Album: {{ creatorStats.total_albums }}</p>
+            <p>Total Playlists: {{ creatorStats.total_playlists }}</p>
+            <p>Total Rating: {{ creatorStats.average_rating }}</p>
+        </div>
+      </div>
+
     <!-- searched songs -->
     <div class="searched-songs">
       <h2>Searched Songs</h2>
@@ -185,7 +197,9 @@ export default {
       editedAlbumReleaseYear: '',
 
       showLyrics: false,
-      searchedSongs : ''
+      searchedSongs : '',
+
+      creatorStats: '',
     };
   },
   created() {
@@ -193,6 +207,7 @@ export default {
     this.fetchYourAlbums();
     this.fetchYourPlaylists();
     this.fetchSongs();
+    this.fetchCreatorStats();
   },
   mounted() {    
     this.email = localStorage.getItem('email') || '';
@@ -264,6 +279,19 @@ export default {
       }
     },
 
+
+    async fetchCreatorStats() {
+        try {
+          const response = await axios.get('http://localhost:5000/users/users/creator_stats' , {
+            headers: { Authorization: localStorage.getItem('token') },
+          });
+
+          this.creatorStats = response.data;
+        } catch (error) {   
+          console.error('Error fetching creator stats:', error);
+        }
+      },
+
     deleteSong(songId) {
       axios.delete(`http://localhost:5000/songs/delete_song/${songId}`, {
         headers: { Authorization: localStorage.getItem('token') }, 
@@ -272,6 +300,8 @@ export default {
         // If the deletion was successful, remove the song from the uploadedSongs array
         this.uploadedSongs = this.uploadedSongs.filter(song => song.id !== songId);
         console.log('Song deleted successfully.');
+
+        this.fetchCreatorStats();
       })
       .catch(error => {
         console.error('Error deleting song:', error);
@@ -291,6 +321,7 @@ export default {
         this.showPlaylistForm = false;
 
         this.fetchYourPlaylists();
+        this.fetchCreatorStats();
       } catch (error) {
         console.error('Error creating playlist:', error);
       }
@@ -309,6 +340,7 @@ export default {
         this.showAlbumForm = false;
 
         this.fetchYourAlbums();
+        this.fetchCreatorStats();
       } catch (error) {
         console.error('Error creating album:', error);
       }
@@ -324,6 +356,7 @@ export default {
         console.log('Album deleted successfully.');
 
         this.fetchYourAlbums();
+        this.fetchCreatorStats();
       })
       .catch(error => {
         console.error('Error deleting album:', error);
@@ -340,6 +373,7 @@ export default {
         console.log('Playlist deleted successfully.');
         
         this.fetchYourPlaylists();
+        this.fetchCreatorStats();
       })
       .catch(error => {
         console.error('Error deleting playlist:', error);
@@ -484,6 +518,9 @@ export default {
 </script>
 
 <style scoped>
+  body{
+    
+  }
   /* Dashboard Heading */
   h1 {
     text-align: center;

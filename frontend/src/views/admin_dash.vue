@@ -105,7 +105,9 @@
     methods: {
       async fetchUsers() {
         try {
-          const response = await axios.get('http://localhost:5000/users/users');
+          const response = await axios.get('http://localhost:5000/users/users', {
+            headers: { Authorization: localStorage.getItem('token') },
+          });
           this.users = response.data;
         } catch (error) {
           console.error('Error fetching users:', error);
@@ -114,7 +116,9 @@
   
       async fetchAlbums() {
         try {
-          const response = await axios.get('http://localhost:5000/albums/albums');
+          const response = await axios.get('http://localhost:5000/albums/albums', {
+            headers: { Authorization: localStorage.getItem('token') },
+          });
           this.albums = response.data;
         } catch (error) {
           console.error('Error fetching albums:', error);
@@ -123,7 +127,9 @@
   
       async fetchPlaylists() {
         try {
-          const response = await axios.get('http://localhost:5000/playlists/playlists');
+          const response = await axios.get('http://localhost:5000/playlists/playlists', {
+            headers: { Authorization: localStorage.getItem('token') },
+          });
           this.playlists = response.data;
         } catch (error) {
           console.error('Error fetching playlists:', error);
@@ -132,7 +138,9 @@
   
       async fetchSongs() {
         try {
-          const response = await axios.get('http://localhost:5000/songs/songs');
+          const response = await axios.get('http://localhost:5000/songs/songs', {
+            headers: { Authorization: localStorage.getItem('token') },
+          });
           this.songs = response.data;
         } catch (error) {
           console.error('Error fetching songs:', error);
@@ -142,7 +150,9 @@
 
       async fetchAdminStats() {
         try {
-          const response = await axios.get('http://localhost:5000/users/users/admin_stats');
+          const response = await axios.get('http://localhost:5000/users/users/admin_stats', {
+            headers: { Authorization: localStorage.getItem('token') },
+          });
           this.adminStats = response.data;
         } catch (error) {   
           console.error('Error fetching admin stats:', error);
@@ -213,6 +223,7 @@
         console.log('Album deleted successfully.');
 
         this.fetchYourAlbums();
+        this.fetchAdminStats();
       })
       .catch(error => {
         console.error('Error deleting album:', error);
@@ -230,6 +241,7 @@
         console.log('Playlist deleted successfully.');
         
         this.fetchYourPlaylists();
+        this.fetchAdminStats();
       })
       .catch(error => {
         console.error('Error deleting playlist:', error);
