@@ -85,7 +85,17 @@ rating_input_model = api.model("RatingInput", {
 })
 
 
+# stats
+admin_stats_output_model = api.model("AdminStats", {
+    "total_users": fields.Integer,
+    "total_songs": fields.Integer,
+    "total_playlists": fields.Integer,
+    "total_albums": fields.Integer  
+})
 
-
-
-
+creator_stats_output_model = api.model("CreatorStats", {
+    "total_songs": fields.Integer,
+    "total_albums": fields.Integer,
+    "total_playlists": fields.Integer,
+    "average_rating": fields.Float
+})

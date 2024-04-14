@@ -4,6 +4,21 @@
       <div class="user-info">
         <p>Welcome, {{ email }} [{{ role }}]</p>
       </div>
+
+      <!-- admin stats -->
+      <div>
+      <h2>Statistics</h2>
+      <div v-if="loading">Loading...</div>
+        <div v-else>
+            <p>Total Users: {{ adminStats.total_users }}</p>
+            <p>Total Songs: {{ adminStats.total_songs }}</p>
+            <p>Total Playlists: {{ adminStats.total_playlists }}</p>
+            <p>Total Albums: {{ adminStats.total_albums }}</p>
+        </div>
+      </div>
+
+
+
   
       <!-- Users Section -->
       <div class="section">
@@ -72,8 +87,14 @@
         showPlaylists: false,
         showSongs: false,
 
+        adminStats: {},
+
        
       };
+    },
+  
+    created() {
+      this.fetchAdminStats();
     },
   
     mounted() {
@@ -117,32 +138,66 @@
           console.error('Error fetching songs:', error);
         }
       },
+
+
+      async fetchAdminStats() {
+        try {
+          const response = await axios.get('http://localhost:5000/users/users/admin_stats');
+          this.adminStats = response.data;
+        } catch (error) {   
+          console.error('Error fetching admin stats:', error);
+        }
+      },
   
 
   
-      async blacklistSong(songId) {
-  try {
-    const response = await axios.get(`http://localhost:5000/songs/songs/flag_song/${songId}`, {
-      headers: { Authorization: localStorage.getItem('token') },
-    });
-    
-    console.log('Song blacklisted successfully:', updatedSong);
-  } catch (error) {
-    console.error('Error blacklisting song:', error);
-  }
-},
+    async blacklistSong(songId) {
+      try {
+        const response = await axios.get(`http://localhost:5000/songs/songs/flag_song/${songId}`, {
+          headers: { Authorization: localStorage.getItem('token') },
+        });
+        
+        console.log('Song blacklisted successfully:', updatedSong);
+      } catch (error) {
+        console.error('Error blacklisting song:', error);
+      }
+    },
 
-async whitelistSong(songId) {
-  try {
-    const response = await axios.get(`http://localhost:5000/songs/songs/unflag_song/${songId}`, {
-      headers: { Authorization: localStorage.getItem('token') },
-    });
-    
-    console.log('Song whitelisted successfully:', updatedSong);
-  } catch (error) {
-    console.error('Error whitelisting song:', error);
-  }
-},
+    async whitelistSong(songId) {
+      try {
+        const response = await axios.get(`http://localhost:5000/songs/songs/unflag_song/${songId}`, {
+          headers: { Authorization: localStorage.getItem('token') },
+        });
+        
+        console.log('Song whitelisted successfully:', updatedSong);
+      } catch (error) {
+        console.error('Error whitelisting song:', error);
+      }
+    },
+
+    async blacklistUser(userId) {
+      try {
+        const response = await axios.get(`http://localhost:5000/users/users/blacklist${userId}`, {
+          headers: { Authorization: localStorage.getItem('token') },
+        });
+        
+        console.log('User blacklisted successfully:', updatedUser);
+      } catch (error) {
+        console.error('Error blacklisting user:', error);
+      }
+    },
+
+    async whitelistUser(userId) {
+      try {
+        const response = await axios.get(`http://localhost:5000/users/users/whitelist${userId}`, {
+          headers: { Authorization: localStorage.getItem('token') },
+        });
+        
+        console.log('User whitelisted successfully:', updatedUser);
+      } catch (error) {
+        console.error('Error whitelisting user:', error);
+      }
+    },   
 
 
 

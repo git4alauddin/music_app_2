@@ -1,11 +1,11 @@
 from flask_restx import Resource, Namespace
 from models.user_model import User, Role
 from models.playlist_model import Playlist
-from models.song_model import Song
+from models.song_model import Song, Rating
 from models.album_model import Album
 from flask_security import current_user, auth_required, roles_accepted
-from api.api_models import user_output_model, album_output_model,playlist_output_model, user_input_model, output_all_songs
-
+from api.api_models import user_output_model, album_output_model,playlist_output_model, user_input_model, output_all_songs, creator_stats_output_model, admin_stats_output_model
+from sqlalchemy import func 
 from extensions.extension import db
 '''
 +--------------------------------------------------------------+
@@ -76,4 +76,55 @@ class UsersListApi(Resource):
     def get(self):
         user = User.query.all()
         return user, 200
+
+
+# blacklist and whitelist user
+ns_user.route('/users/blacklist/<string:user_id>')
+class UserBlacklistApi(Resource):    
+    @auth_required('token')
+
+    def put(self, user_id):
+        user = User.query.get(user_id)
+        user.active = False
+        db.session.commit()
+        return user
+    
+ns_user.route('/users/whitelist/<string:user_id>')
+class UserWhitelistApi(Resource):
+    @auth_required('token')
+    
+    def put(self, user_id):
+        user = User.query.get(user_id)
+        user.active = True
+        db.session.commit()
+        return user
+
+# -------------------stats---------------------------
+@ns_user.route('/users/creator_stats')
+class CreatorStatsApi(Resource):
+    @auth_required('token')
+    @ns_user.marshal_with(creator_stats_output_model)
+    def get(self):
+        total_songs = Song.query.filter_by(creator_id=current_user.id).count()
+        total_albums = Album.query.filter_by(user_id=current_user.id).count()
+        total_playlists = Playlist.query.filter_by(user_id=current_user.id).count()
+
+        average_rating = db.session.query(func.avg(Rating.value)).join(Song).filter(Song.creator_id == current_user.id).scalar()
+        average_rating = round(average_rating, 1) if average_rating else 0.0
+
+        return {'total_songs': total_songs, 'total_albums': total_albums, 'total_playlists': total_playlists, 'average_rating': average_rating}
+    
+
+@ns_user.route('/users/admin_stats')
+class AdminStatsApi(Resource):
+   
+    @ns_user.marshal_with(admin_stats_output_model)
+    def get(self):
+        total_users = User.query.count()
+        total_songs = Song.query.count()
+        total_albums = Album.query.count()
+        total_playlists = Playlist.query.count()
+
+        return {'total_users': total_users, 'total_songs': total_songs, 'total_albums': total_albums, 'total_playlists': total_playlists}
+
     

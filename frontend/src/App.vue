@@ -13,7 +13,7 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router'
 import {ref} from 'vue'
-import navbar from "@/components/navbar.vue"
+import navbar from "@/components/NavBar.vue"
 import player from "@/components/player.vue"
 import { useRoute, useRouter } from 'vue-router';
 

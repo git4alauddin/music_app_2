@@ -9,7 +9,7 @@ from flask import current_app
 from extensions.extension import db
 from models.song_model import Song, SongFile, Rating
 import random
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 
 ns_song = Namespace('songs', description='Song related operations')
 
@@ -196,7 +196,8 @@ class SearchSongApi(Resource):
             or_(
                 Song.title.contains(query),
                 Song.artist.contains(query),
-                Song.genre.contains(query)
+                Song.genre.contains(query),
+                func.cast(Song.average_rating, db.String).contains(query)
             )
         ).all()
 

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="user-dash">
     <div class="search-bar">
       <input type="text" placeholder="Search..." v-model="searchQuery">
       <button class="search-btn" @click="searchSongs">Search</button>
@@ -91,6 +91,23 @@
       </form>
     </div>
 
+    <!-- Uploaded Songs Section -->
+    <div class="section">
+      <h2 @click.prevent="toggleUploadedSongs">Your Uploaded Songs</h2>
+      <ul class="uploaded-songs-list" v-if="showUploadedSongs">
+        <li v-for="song in uploadedSongs" :key="song.id" class="uploaded-song">
+          <div class="song-details">
+            <h3>{{ song.title }}</h3>
+            <p><strong>Artist:</strong> {{ song.artist }}</p>
+            <p><strong>Genre:</strong> {{ song.genre }}</p>
+            <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
+            <div>
+              <button @click="deleteSong(song.id)">Delete</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
 
     <!-- Your Albums -->
     <div class="section">
@@ -130,23 +147,9 @@
       </ul>
     </div>
 
-    <!-- Uploaded Songs Section -->
-    <div class="section">
-      <h2 @click.prevent="toggleUploadedSongs">Your Uploaded Songs</h2>
-      <ul class="uploaded-songs-list" v-if="showUploadedSongs">
-        <li v-for="song in uploadedSongs" :key="song.id" class="uploaded-song">
-          <div class="song-details">
-            <h3>{{ song.title }}</h3>
-            <p><strong>Artist:</strong> {{ song.artist }}</p>
-            <p><strong>Genre:</strong> {{ song.genre }}</p>
-            <p><strong>Lyrics:</strong> {{ song.lyrics }}</p>
-            <div>
-              <button @click="deleteSong(song.id)">Delete</button>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
+
+
+
   </div>
 </template>
 
