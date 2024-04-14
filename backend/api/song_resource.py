@@ -9,6 +9,7 @@ from flask import current_app
 from extensions.extension import db
 from models.song_model import Song, SongFile, Rating
 import random
+from sqlalchemy import or_
 
 ns_song = Namespace('songs', description='Song related operations')
 
@@ -169,3 +170,34 @@ class FlagSongApi(Resource):
         else:
             return {'message': 'Song not found'}, 404
         
+# same for unfalg
+@ns_song.route('/songs/unflag_song/<string:song_id>')
+class UnflagSongApi(Resource):
+    @auth_required('token')
+    def get(self, song_id):
+        song = Song.query.get(song_id)
+        if song:
+            song.is_flagged = False
+            db.session.commit()
+            return {'message': 'Song unflagged successfully'}, 200
+        else:
+            return {'message': 'Song not found'}, 404
+
+
+@ns_song.route('/songs/search/<string:search_query>')
+class SearchSongApi(Resource):
+    @ns_song.marshal_with(output_all_songs)
+    @auth_required('token')
+    def get(self, search_query):
+        query = search_query
+        query = f"%{query}%"
+
+        songs = Song.query.filter(
+            or_(
+                Song.title.contains(query),
+                Song.artist.contains(query),
+                Song.genre.contains(query)
+            )
+        ).all()
+
+        return songs, 200

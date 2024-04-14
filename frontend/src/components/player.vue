@@ -67,7 +67,7 @@ export default {
 
 /* # give padding from top so that it will not overlap the contents at bottom */
 .player .audio_player {
-  padding-top: 20px;
+  z-index: -1;
 }
 /* its not working */
 

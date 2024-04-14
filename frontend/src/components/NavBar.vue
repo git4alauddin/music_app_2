@@ -22,11 +22,14 @@
   </nav>
 </template>
 <script setup>
+import axios from 'axios'
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import router from '../router/index'
 
 const route = useRoute()
+
+
 function checklogin() {
   return localStorage.getItem('loggedin') === 'true'
 }
@@ -39,6 +42,8 @@ const logout = () => {
   localStorage.removeItem('email')
   router.push('/')
 }
+
+
 const links = computed(() => {
   switch (route.name) {
     case 'welcome':

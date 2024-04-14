@@ -1,10 +1,39 @@
 <template>
   <div>
+    <div class="search-bar">
+      <input type="text" placeholder="Search..." v-model="searchQuery">
+      <button class="search-btn" @click="searchSongs">Search</button>
+    </div>
+
     <h1>{{ role }} Dashboard</h1>
     <div class="user-info">
       <p>Welcome, {{ email }} [{{ role }}]</p>
       <h3 v-if="role === 'user'" @click="registerAsCreator">[Register as creator]</h3>
     </div>
+
+    <!-- searched songs -->
+    <div class="searched-songs">
+      <h2>Searched Songs</h2>
+      <div class="song-container">
+        <div v-for="song in searchedSongs" :key="song.id" class="song-details">
+          <h3>{{ song.title }} [{{  song.average_rating }}]</h3>
+          <p><strong>Artist:</strong> {{ song.artist }}</p>
+          <p><strong>Genre:</strong> {{ song.genre }}</p>
+          <button @click="toggleLyrics(song)">Lyrics</button>
+          <p v-if="song.showLyrics"><strong>Lyrics:</strong> {{ song.lyrics }}</p>
+          <div class="rating">
+            <input type="radio" v-model="song.rating" value="1"> 1
+            <input type="radio" v-model="song.rating" value="2"> 2
+            <input type="radio" v-model="song.rating" value="3"> 3
+            <input type="radio" v-model="song.rating" value="4"> 4
+            <input type="radio" v-model="song.rating" value="5"> 5
+          </div>
+          <button @click="rateSong(song.id, parseInt(song.rating))">Rate</button>
+          <button @click="playSong(song.id)">Play</button>
+        </div>
+      </div>
+    </div>
+
 
     <!-- Suggested Songs -->
     <div class="suggested-songs">
@@ -152,7 +181,8 @@ export default {
       editedAlbumTitle: '',
       editedAlbumReleaseYear: '',
 
-      showLyrics: false
+      showLyrics: false,
+      searchedSongs : ''
     };
   },
   created() {
@@ -354,6 +384,7 @@ export default {
         console.log('Song rated successfully:', response.data);
 
         this.fetchSongs();
+        this.searchSongs();
       } catch (error) {
         console.error('Error rating song:', error);
       }
@@ -430,10 +461,21 @@ export default {
 
   toggleLyrics(song) {
     song.showLyrics = !song.showLyrics;
+  },
+
+
+  async searchSongs() {
+    try {
+      const response = await axios.get(`http://localhost:5000/songs/songs/search/${this.searchQuery}`, {
+        headers: { Authorization: localStorage.getItem('token') }, 
+      });
+      this.searchedSongs = response.data;
+    } catch (error) {
+      console.error('Error searching songs:', error);
+    }
   }
 
   }
-
 };
 
 </script>

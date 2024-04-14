@@ -32,7 +32,8 @@ output_all_songs = api.model("AllSongs", {
     "artist": fields.String,
     "genre": fields.String,
     "lyrics": fields.String,
-    "average_rating": fields.Float
+    "average_rating": fields.Float,
+    "is_flagged": fields.Boolean
 })
 
 

@@ -1,5 +1,5 @@
 from flask_restx import Resource, Namespace
-from models.user_model import User
+from models.user_model import User, Role
 from models.playlist_model import Playlist
 from models.song_model import Song
 from models.album_model import Album
@@ -26,7 +26,8 @@ class UserApi(Resource):
     @ns_user.marshal_with(user_input_model)
     def put(self,id):
         user = User.query.get(id)
-        user.role = 'creator'
+        new_role = Role.query.filter_by(name='creator').first()
+        user.roles = [new_role]
         db.session.commit()
         return user, 201
     

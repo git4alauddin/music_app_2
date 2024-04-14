@@ -12,7 +12,6 @@
           <div v-for="user in users" :key="user.id" class="user">
             <h3>{{ user.email }}</h3>
             <h2>{{ user.username }}</h2>
-            <button @click="blacklistUser(user.id)">Blacklist</button>
           </div>
         </div>
       </div>
@@ -40,16 +39,19 @@
         </div>
       </div>
   
-      <!-- Songs Section -->
-      <div class="section">
-        <button @click="toggleSongs">Songs</button>
-        <div class="songs" v-if="showSongs && songs.length > 0">
-          <div v-for="song in songs" :key="song.id" class="song">
-            <h3>{{ song.title }}</h3>
-            <button @click="blacklistSong(song.id)">Blacklist</button>
-          </div>
+    <!-- Songs Section -->
+    <div class="section">
+      <button @click="toggleSongs">Songs</button>
+      <div class="songs" v-if="showSongs && songs.length > 0">
+        <div v-for="song in songs" :key="song.id" class="song">
+          <h3>{{ song.title }}</h3>
+          <button v-if="!song.is_flagged" @click="blacklistSong(song.id)">Blacklist</button>
+          <button v-else @click="whitelistSong(song.id)">Whitelist</button>
         </div>
       </div>
+    </div>
+
+
     </div>
   </template>
   
@@ -69,6 +71,8 @@
         showAlbums: false,
         showPlaylists: false,
         showSongs: false,
+
+       
       };
     },
   
@@ -114,25 +118,34 @@
         }
       },
   
-      async blacklistUser(userId) {
-        try {
-          // Implement your API call to blacklist user by userId
-          console.log('Blacklisting user:', userId);
-        } catch (error) {
-          console.error('Error blacklisting user:', error);
-        }
-      },
+
   
       async blacklistSong(songId) {
-        try {
-          const response = await axios.get(`http://localhost:5000/songs/songs/flag_song/${songId}`, {
-            headers: { Authorization: localStorage.getItem('token') },
-          })
-          console.log('Song blacklisted successfully:', response.data);
-        } catch (error) {
-          console.error('Error blacklisting song:', error);
-        }
-      },
+  try {
+    const response = await axios.get(`http://localhost:5000/songs/songs/flag_song/${songId}`, {
+      headers: { Authorization: localStorage.getItem('token') },
+    });
+    
+    console.log('Song blacklisted successfully:', updatedSong);
+  } catch (error) {
+    console.error('Error blacklisting song:', error);
+  }
+},
+
+async whitelistSong(songId) {
+  try {
+    const response = await axios.get(`http://localhost:5000/songs/songs/unflag_song/${songId}`, {
+      headers: { Authorization: localStorage.getItem('token') },
+    });
+    
+    console.log('Song whitelisted successfully:', updatedSong);
+  } catch (error) {
+    console.error('Error whitelisting song:', error);
+  }
+},
+
+
+
   
   
     async deleteAlbum(albumId) {
@@ -150,7 +163,7 @@
         console.error('Error deleting album:', error);
       });
     },
-    
+
 
     async deletePlaylist(playlistId) {
       axios.delete(`http://localhost:5000/playlists/playlists/${playlistId}`, {
