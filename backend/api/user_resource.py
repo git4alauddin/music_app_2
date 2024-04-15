@@ -3,7 +3,7 @@ from models.user_model import User, Role
 from models.playlist_model import Playlist
 from models.song_model import Song, Rating
 from models.album_model import Album
-from flask_security import current_user, auth_required, roles_accepted
+# from flask_security import current_user, auth_required, roles_accepted
 from api.api_models import user_output_model, album_output_model,playlist_output_model, user_input_model, output_all_songs, creator_stats_output_model, admin_stats_output_model
 from sqlalchemy import func 
 from extensions.extension import db
@@ -41,32 +41,32 @@ class UserApi(Resource):
 #----------------------------------/users/<string:id>/playlists-------------------------------#
 @ns_user.route('/users/playlists')
 class UserPlaylistApi(Resource):
-    @auth_required('token')
-    @roles_accepted('user', 'creator')
+    # @auth_required('token')
+    # @roles_accepted('user', 'creator')
     @ns_user.marshal_with(playlist_output_model)
     def get(self):
-        playlists = Playlist.query.filter_by(user_id=current_user.id).all()
+        playlists = Playlist.query.filter_by(user_id=1).all()
         return playlists, 200
 
 #----------------------------------/users/<string:id>/albums-------------------------------#
 @ns_user.route('/users/albums')
 class UserAlbumApi(Resource):
-    @auth_required('token')
-    @roles_accepted('user', 'creator')
+    # @auth_required('token')
+    # @roles_accepted('user', 'creator')
     @ns_user.marshal_with(album_output_model)
     def get(self):
-        albums = Album.query.filter_by(user_id=current_user.id).all()
+        albums = Album.query.filter_by(user_id=1).all()
         return albums, 200
 
 #----------------------------------/users/<string:id>/songs-------------------------------#  
 @ns_user.route('/users/songs')
 class UserSongApi(Resource):
     @ns_user.marshal_with(output_all_songs)
-    @auth_required('token')
-    @roles_accepted('user')
+    # @auth_required('token')
+    # @roles_accepted('user')
     def get(self):
-        print(current_user.id)
-        songs = Song.query.filter_by(creator_id=current_user.id).all()
+        print(1)
+        songs = Song.query.filter_by(1).all()
         return songs, 200
 
 #----------------------------------/users------------------------------------#
@@ -81,7 +81,7 @@ class UsersListApi(Resource):
 # blacklist and whitelist user
 ns_user.route('/users/blacklist/<string:user_id>')
 class UserBlacklistApi(Resource):    
-    @auth_required('token')
+    # @auth_required('token')
 
     def put(self, user_id):
         user = User.query.get(user_id)
@@ -91,7 +91,7 @@ class UserBlacklistApi(Resource):
     
 ns_user.route('/users/whitelist/<string:user_id>')
 class UserWhitelistApi(Resource):
-    @auth_required('token')
+    # @auth_required('token')
     
     def put(self, user_id):
         user = User.query.get(user_id)
@@ -102,14 +102,14 @@ class UserWhitelistApi(Resource):
 # -------------------stats---------------------------
 @ns_user.route('/users/creator_stats')
 class CreatorStatsApi(Resource):
-    @auth_required('token')
+    # @auth_required('token')
     @ns_user.marshal_with(creator_stats_output_model)
     def get(self):
-        total_songs = Song.query.filter_by(creator_id=current_user.id).count()
-        total_albums = Album.query.filter_by(user_id=current_user.id).count()
-        total_playlists = Playlist.query.filter_by(user_id=current_user.id).count()
+        total_songs = Song.query.filter_by(creator_id=1).count()
+        total_albums = Album.query.filter_by(user_id=1).count()
+        total_playlists = Playlist.query.filter_by(user_id=1).count()
 
-        average_rating = db.session.query(func.avg(Rating.value)).join(Song).filter(Song.creator_id == current_user.id).scalar()
+        average_rating = db.session.query(func.avg(Rating.value)).join(Song).filter(Song.creator_id == 1).scalar()
         average_rating = round(average_rating, 1) if average_rating else 0.0
 
         return {'total_songs': total_songs, 'total_albums': total_albums, 'total_playlists': total_playlists, 'average_rating': average_rating}

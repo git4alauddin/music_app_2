@@ -2,7 +2,7 @@ from flask_restx import Namespace, Resource
 from flask import request
 from api.api_models import upload_song_model, output_all_songs
 from random import random
-from flask_security import current_user, auth_required
+# from flask_security import current_user, auth_required
 from werkzeug.utils import secure_filename
 import os
 from flask import current_app
@@ -17,7 +17,7 @@ ns_song = Namespace('songs', description='Song related operations')
 @ns_song.route('/upload_song')
 class UploadSongApi(Resource):
     @ns_song.expect(upload_song_model)
-    @auth_required('token')
+    # @auth_required('token')
     def post(self):
         title = request.json.get('title')
         artist = request.json.get('artist')
@@ -42,7 +42,7 @@ class UploadSongApi(Resource):
             artist=artist,
             genre=genre,
             lyrics=lyrics,
-            creator_id=current_user.id
+            creator_id=1 #current_user.id
         )
         
         try:
@@ -82,7 +82,7 @@ class SongLyricsApi(Resource):
 
 @ns_song.route('/delete_song/<string:song_id>')
 class DeleteSongApi(Resource):
-    @auth_required('token')
+    # @auth_required('token')
     def delete(self, song_id):
         song = Song.query.get(song_id)
 
@@ -111,7 +111,7 @@ class RateSongApi(Resource):
     def post(self):
         song_id = request.json.get('song_id')
         rating = request.json.get('rating')
-        user_id = current_user.id
+        user_id = 1 #current_user.id
 
         song = Song.query.get(song_id)
         if song:
@@ -160,7 +160,7 @@ class SongListApi(Resource):
 
 @ns_song.route('/songs/flag_song/<string:song_id>')
 class FlagSongApi(Resource):
-    @auth_required('token')
+    # @auth_required('token')
     def get(self, song_id):
         song = Song.query.get(song_id)
         if song:
@@ -173,7 +173,7 @@ class FlagSongApi(Resource):
 # same for unfalg
 @ns_song.route('/songs/unflag_song/<string:song_id>')
 class UnflagSongApi(Resource):
-    @auth_required('token')
+    # @auth_required('token')
     def get(self, song_id):
         song = Song.query.get(song_id)
         if song:
@@ -187,7 +187,7 @@ class UnflagSongApi(Resource):
 @ns_song.route('/songs/search/<string:search_query>')
 class SearchSongApi(Resource):
     @ns_song.marshal_with(output_all_songs)
-    @auth_required('token')
+    # @auth_required('token')
     def get(self, search_query):
         query = search_query
         query = f"%{query}%"

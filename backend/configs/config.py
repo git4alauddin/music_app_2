@@ -9,6 +9,8 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///11.sqlite'
     SECRET_KEY = 'my-very-secret-key'
+    # add salt 
+    
     # HEADER FOR SECURITY
     SECURITY_TOKEN_AUTHENTICATION_HEADER = 'Authorization'
 
