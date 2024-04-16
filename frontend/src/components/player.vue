@@ -1,4 +1,6 @@
 <template>
+    <h1>player</h1>
+    <!--
     <div class="player">
         <audio controls autoplay>
             <source src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
@@ -7,8 +9,9 @@
         <div class="song_info">
             <h3>artist</h3>
         </div>
-
-    </div>
+        
+      </div>
+    -->
 </template>
 
 <script>

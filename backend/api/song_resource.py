@@ -10,6 +10,8 @@ from extensions.extension import db
 from models.song_model import Song, SongFile, Rating
 import random
 from sqlalchemy import or_, func
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+
 
 ns_song = Namespace('songs', description='Song related operations')
 

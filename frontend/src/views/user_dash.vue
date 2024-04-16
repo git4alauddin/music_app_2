@@ -16,8 +16,8 @@
       <h2>Statistics</h2>
       <div v-if="loading">Loading...</div>
         <div v-else>
-            <p>Total Song: {{ creatorStats.total_songs }}</p>
-            <p>Total Album: {{ creatorStats.total_albums }}</p>
+            <p>Total Songs: {{ creatorStats.total_songs }}</p>
+            <p>Total Albums: {{ creatorStats.total_albums }}</p>
             <p>Total Playlists: {{ creatorStats.total_playlists }}</p>
             <p>Total Rating: {{ creatorStats.average_rating }}</p>
         </div>
@@ -246,7 +246,7 @@ export default {
     async fetchUploadedSongs() {
       try {
         const response = await axios.get('http://localhost:5000/users/users/songs', {
-          headers: { Authorization: localStorage.getItem('token') }, 
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
         });
         this.uploadedSongs = response.data;
         console.log('Uploaded songs:', this.uploadedSongs);
@@ -258,7 +258,7 @@ export default {
     async fetchYourAlbums() {
       try {
         const response = await axios.get('http://localhost:5000/users/users/albums', {
-          headers: { Authorization: localStorage.getItem('token') },
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
         })
         this.yourAlbums = response.data;
         console.log('Your albums:', this.yourAlbums);
@@ -270,7 +270,7 @@ export default {
     async fetchYourPlaylists() {
       try {
         const response = await axios.get('http://localhost:5000/users/users/playlists', {
-          headers: { Authorization: localStorage.getItem('token') },
+          headers: { Authorization: 'Bearer ' +localStorage.getItem('token') },
         })
         this.yourPlaylists = response.data;
         console.log('Your playlists:', this.yourPlaylists);
@@ -283,7 +283,7 @@ export default {
     async fetchCreatorStats() {
         try {
           const response = await axios.get('http://localhost:5000/users/users/creator_stats' , {
-            headers: { Authorization: localStorage.getItem('token') },
+            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
           });
 
           this.creatorStats = response.data;
@@ -294,7 +294,7 @@ export default {
 
     deleteSong(songId) {
       axios.delete(`http://localhost:5000/songs/delete_song/${songId}`, {
-        headers: { Authorization: localStorage.getItem('token') }, 
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
       })
       .then(response => {
         // If the deletion was successful, remove the song from the uploadedSongs array
@@ -314,7 +314,7 @@ export default {
           title: this.playlistName,
           id: this.user_id 
         }, {
-          headers: { Authorization: localStorage.getItem('token') }, 
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
         });
         console.log('Playlist created successfully:', response.data);
         this.playlistName = '';
@@ -333,7 +333,7 @@ export default {
           title: this.albumName,
           release_year: this.releaseYear
         }, {
-          headers: { Authorization: localStorage.getItem('token') }, 
+          headers: { Authorization: 'Bearer '  + localStorage.getItem('token') }, 
         });
         console.log('Album created successfully:', response.data);
         this.albumName = '';
@@ -348,7 +348,7 @@ export default {
 
     async deleteAlbum(albumId) {
       axios.delete(`http://localhost:5000/albums/albums/${albumId}`, {
-        headers: { Authorization: localStorage.getItem('token') }, 
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
       })
       .then(response => {
         // If the deletion was successful, remove the album from the yourAlbums array
@@ -365,7 +365,7 @@ export default {
 
     async deletePlaylist(playlistId) {
       axios.delete(`http://localhost:5000/playlists/playlists/${playlistId}`, {
-        headers: { Authorization: localStorage.getItem('token') }, 
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
       })
       .then(response => {
         // If the deletion was successful, remove the playlist from the yourPlaylists array
@@ -386,7 +386,7 @@ export default {
         const response = await axios.put(`http://localhost:5000/users/users/${this.user_id}`, {
           id: this.user_id
         }, {
-          headers: { Authorization: localStorage.getItem('token') }, 
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
         });
         console.log('User registered as creator successfully:', response.data);
         
@@ -401,7 +401,7 @@ export default {
     async fetchSongs() {
       try {
         const response = await axios.get('http://localhost:5000/songs/songs', {
-          headers: { Authorization: localStorage.getItem('token') }, 
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
         })
         this.suggestedSongs = response.data;
         console.log('Songs:', this.suggestedSongs);
@@ -416,7 +416,7 @@ export default {
           rating: rating,
           song_id: songId
         }, {
-          headers: { Authorization: localStorage.getItem('token') }, 
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
         });
         console.log('Song rated successfully:', response.data);
 

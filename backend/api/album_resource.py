@@ -4,6 +4,7 @@ from models.album_model import Album
 from models.song_model import Song
 from extensions.extension import db
 from api.api_models import album_output_model, album_input_model, output_all_songs
+from decorator.decorator import auth_required, roles_accepted
 '''
 +--------------------------------------------------------------+
 |                         namespace albums                     |

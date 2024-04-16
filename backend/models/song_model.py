@@ -1,4 +1,6 @@
 from extensions.extension import db
+from decorator.decorator import auth_required, roles_accepted
+# auth_required, roles_accepted
 import uuid
 
 # form defaults

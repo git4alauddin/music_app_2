@@ -23,10 +23,19 @@ class User(db.Model):
     active = db.Column(db.Boolean(), default=True)  # 
     roles = db.relationship('Role', secondary='user_roles', backref=db.backref('users', lazy='dynamic'))
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email
+        }
+    
 user_roles = db.Table('user_roles',
     db.Column('user_id', db.String(36), db.ForeignKey('user.id')),
     db.Column('role_id', db.Integer(), db.ForeignKey('role.id'))
 )
+
+
 
 # user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
