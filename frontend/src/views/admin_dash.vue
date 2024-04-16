@@ -68,15 +68,15 @@
           <th>Email</th>
           <th>Username</th>
           <th>Active</th>
-          <th>Action</th>
+          <!-- <th>Action</th> -->
         </tr>
         <tr v-for="user in users" :key="user.id">
           <td>{{ user.email }}</td>
           <td>{{ user.username }}</td>
           <td>{{ user.active }}</td>
           <td>
-            <button v-if="user.active" @click="blacklistUser(user.id)">Blacklist</button>
-            <button v-else @click="whitelistUser(user.id)">Whitelist</button>
+            <!-- <button v-if="user.active" @click="blacklistUser(user.id)">Blacklist</button>
+            <button v-else @click="whitelistUser(user.id)">Whitelist</button> -->
           </td>
         </tr>
       </table>

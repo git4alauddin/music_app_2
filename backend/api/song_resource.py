@@ -102,10 +102,10 @@ class DeleteSongApi(Resource):
             # delete_song
             song_file = SongFile.query.filter_by(song_id=song_id).first()
             file_name = song_file.file_name
-            # song_file_path = os.path.join(current_app.config['SONG_UPLOAD_FOLDER'], file_name)
-            # if os.path.exists(song_file_path):
-            #     print(f'{song_file_path} exists')
-            #     os.remove(song_file_path)
+            song_file_path = os.path.join(current_app.config['SONG_UPLOAD_FOLDER'], file_name)
+            if os.path.exists(song_file_path):
+                print(f'{song_file_path} exists')
+                os.remove(song_file_path)
             
             # delete song_metadata
             db.session.delete(song_file)
