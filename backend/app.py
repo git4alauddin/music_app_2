@@ -5,6 +5,7 @@ from extensions.extension import api, db
 # from flask_security import Security
 from configs.config import DevelopmentConfig
 # from models.user_model import user_datastore
+from datetime import timedelta
 from flask_jwt_extended import JWTManager
 
 # import resources
@@ -32,6 +33,8 @@ db.init_app(app)
 api.init_app(app)
 
 jwt = JWTManager(app)
+app.config['JWT_EXPIRATION_DELTA'] = timedelta(days=1)  # Token expires after 1 day
+
 if jwt:
     print('jwt initialized')
 bcrypt.init_app(app)

@@ -7,7 +7,7 @@
 
       <!-- admin stats -->
       <div>
-      <h2>Statistics</h2>
+      <h2>stats</h2>
       <div v-if="loading">Loading...</div>
         <div v-else>
             <p>Total Users: {{ adminStats.total_users }}</p>
@@ -16,6 +16,17 @@
             <p>Total Albums: {{ adminStats.total_albums }}</p>
         </div>
       </div>
+
+
+      <!-- admin stats visualization -->
+    <div>
+      <h2>stats visual</h2>
+      <div>
+        <div class="admin-stats-chart">
+          <canvas id="admin-stats-chart"></canvas>
+        </div>
+      </div>
+    </div>
 
 
 
@@ -75,10 +86,12 @@
   
 <script>
 import axios from 'axios';
+import chart from 'chart.js/auto';
 
 export default {
   data() {
     return {
+      // loading: true,
       email: '',
       role: '',
       users: [],
@@ -155,10 +168,50 @@ export default {
           headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
         });
         this.adminStats = response.data;
+        this.renderChart();
         console.log('Admin stats:', this.adminStats);
       } catch (error) {   
         console.error('Error fetching admin stats:', error);
       }
+    },
+
+    renderChart() {
+      const ctx = document.getElementById('admin-stats-chart').getContext('2d');
+      new chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Users', 'Songs', 'Playlists', 'Albums'],
+          datasets: [{
+            label: 'Count',
+            data: [
+              this.adminStats.total_users,
+              this.adminStats.total_songs,
+              this.adminStats.total_playlists,
+              this.adminStats.total_albums
+            ],
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
     },
 
     toggleUsers() {
@@ -281,6 +334,17 @@ export default {
 
   
   <style scoped>
+  /* visuals */
+
+  .admin-stats-chart {
+  width: 400px;
+  height: 300px;
+  margin: auto;
+  }
+
+
+
+
   /* Style for main dashboard container */
   .user-info {
     margin-bottom: 20px;
