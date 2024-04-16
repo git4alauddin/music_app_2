@@ -33,7 +33,7 @@ db.init_app(app)
 api.init_app(app)
 
 jwt = JWTManager(app)
-app.config['JWT_EXPIRATION_DELTA'] = timedelta(days=1)  # Token expires after 1 day
+
 
 if jwt:
     print('jwt initialized')

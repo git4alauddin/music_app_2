@@ -27,10 +27,10 @@
             <textarea class="form-control" id="lyrics" v-model="song.lyrics" required></textarea>
           </div>
 
-          <!-- <div class="form-group">
+          <div class="form-group">
             <label for="file">Upload Song File</label>
-            <input type="file" class="form-control-file" id="file" required>
-          </div> -->
+            <input type="file" class="form-control-file" id="file" @change="handleFileUpload"equired>
+          </div>
 
           <button type="submit" class="btn btn-primary">Upload</button>
         </form>
@@ -51,16 +51,27 @@ const song = reactive({
   title: '',
   artist: '',
   genre: '',
-  lyrics: ''
+  lyrics: '',
+  file: null
 })
 
+const handleFileUpload = (event) => {
+  song.file = event.target.files[0];
+  console.log(song.file);
+}
 function  uploadSong() {
+            const formData = new FormData();
+            formData.append('file', song.file);
+            formData.append('data', JSON.stringify({
+                title: song.title,
+                artist: song.artist,
+                genre: song.genre,
+                lyrics: song.lyrics
+            }));
             axios
                 .post
                 (`http://localhost:5000/songs/upload_song`, 
-                  {
-                    title: song.title, artist: song.artist, genre: song.genre, lyrics: song.lyrics
-                  }, 
+                  formData, 
                   {
                     headers: {Authorization: 'Bearer ' + localStorage.getItem('token')},
                   }

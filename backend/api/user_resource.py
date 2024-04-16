@@ -1,5 +1,5 @@
 from flask_restx import Resource, Namespace
-from models.user_model import User, Role
+from models.user_model import User, Role, user_roles
 from models.playlist_model import Playlist
 from models.song_model import Song, Rating
 from models.album_model import Album
@@ -31,7 +31,7 @@ class UserApi(Resource):
     def put(self,id):
         user = User.query.get(id)
         new_role = Role.query.filter_by(name='creator').first()
-        user.roles = [new_role]
+        user.role = [new_role]
         db.session.commit()
         return user, 201
     
@@ -88,30 +88,7 @@ class UsersListApi(Resource):
         return user, 200
 
 
-# blacklist and whitelist user
-ns_user.route('/users/blacklist/<string:user_id>')
-class UserBlacklistApi(Resource):    
-    # @auth_required('token')
-    @jwt_required()
-    def get(self, user_id):
-        user = User.query.get(user_id)
-        print(user.to_dict())
-        user.active = False
-        db.session.commit()
-        return {'message': 'User blacklisted'}
-    
-ns_user.route('/users/whitelist/<string:user_id>')
-class UserWhitelistApi(Resource):
-    # @auth_required('token')
-    @jwt_required()
-    def get(self, user_id):
-        user = User.query.get(user_id)
-        if user:
-            print(user.to_dict())
-            user.active = True
-            db.session.commit()
-            return {'message': 'User whitelisted'}
-        return {'message': 'User not found'}
+
 
 # -------------------stats---------------------------
 @ns_user.route('/users/creator_stats')

@@ -1,5 +1,5 @@
 <template>
-    <h1>player</h1>
+    <!-- <h1>player</h1> -->
     <!--
     <div class="player">
         <audio controls autoplay>

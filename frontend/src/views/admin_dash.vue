@@ -1,84 +1,150 @@
 <template>
-    <div>
-      <h1>{{ role }} Dashboard</h1>
+  <div>
+
+    <!-- dashboard -->
+    <div class="dashboard-container">
       <div class="user-info">
-        <p>Welcome, {{ email }} [{{ role }}]</p>
+        <h2><p>Welcome, {{ email }} [{{ role }}]</p></h2>
       </div>
-
-      <!-- admin stats -->
-      <div>
-      <h2>stats</h2>
-      <div v-if="loading">Loading...</div>
-        <div v-else>
-            <p>Total Users: {{ adminStats.total_users }}</p>
-            <p>Total Songs: {{ adminStats.total_songs }}</p>
-            <p>Total Playlists: {{ adminStats.total_playlists }}</p>
-            <p>Total Albums: {{ adminStats.total_albums }}</p>
-        </div>
-      </div>
+    </div><hr>
 
 
-      <!-- admin stats visualization -->
-    <div>
-      <h2>stats visual</h2>
-      <div>
-        <div class="admin-stats-chart">
-          <canvas id="admin-stats-chart"></canvas>
-        </div>
+
+    <h2 id = "stats">Stats at a glance....</h2>
+
+    <div class="admin-container">
+  <!-- Admin Stats -->
+  <div class="admin-stats-container">
+    <div class="admin-stat-card">
+      <div v-if="loading" class="loading-message">Loading...</div>
+      <div v-else>
+        <table class="admin-stat-table">
+          <tr>
+            <th>Category</th>
+            <th>Total</th>
+          </tr>
+          <tr>
+            <td>Total Users</td>
+            <td>{{ adminStats.total_users }}</td>
+          </tr>
+          <tr>
+            <td>Total Songs</td>
+            <td>{{ adminStats.total_songs }}</td>
+          </tr>
+          <tr>
+            <td>Total Playlists</td>
+            <td>{{ adminStats.total_playlists }}</td>
+          </tr>
+          <tr>
+            <td>Total Albums</td>
+            <td>{{ adminStats.total_albums }}</td>
+          </tr>
+        </table>
       </div>
     </div>
+  </div>
+
+  <!-- Admin Stats Visualization -->
+  <div class="admin-stats-visualization-container">
+    <div class="admin-stats-chart">
+      <canvas id="admin-stats-chart"></canvas>
+    </div>
+  </div>
+</div>
+<br><hr>
 
 
 
-  
-      <!-- Users Section -->
-      <div class="section">
-        <button @click="toggleUsers">Users</button>
-        <div class="users" v-if="showUsers && users.length > 0">
-          <div v-for="user in users" :key="user.id" class="user">
-            <h3>{{ user.email }}</h3>
-            <h2>{{ user.username }}</h2>
-            <h2>active: {{ user.active }}</h2>
+
+
+
+<div class="section-container">
+  <!-- Users Section -->
+  <div class="section">
+    <button class="func_button" @click="toggleUsers">Users</button>
+    <div class="users" v-if="showUsers && users.length > 0">
+      <table>
+        <tr>
+          <th>Email</th>
+          <th>Username</th>
+          <th>Active</th>
+          <th>Action</th>
+        </tr>
+        <tr v-for="user in users" :key="user.id">
+          <td>{{ user.email }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.active }}</td>
+          <td>
             <button v-if="user.active" @click="blacklistUser(user.id)">Blacklist</button>
             <button v-else @click="whitelistUser(user.id)">Whitelist</button>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Albums Section -->
-      <div class="section">
-        <button @click="toggleAlbums">Albums</button>
-        <div class="albums" v-if="showAlbums && albums.length > 0">
-          <div v-for="album in albums" :key="album.id" class="album">
-            <h3>{{ album.title }}</h3>
-            <h2>{{ album.release_year }}</h2>
-            <button @click="deleteAlbum(album.id)">Delete</button>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Playlists Section -->
-      <div class="section">
-        <button @click="togglePlaylists">Playlists</button>
-        <div class="playlists" v-if="showPlaylists && playlists.length > 0">
-          <div v-for="playlist in playlists" :key="playlist.id" class="playlist">
-            <h3>{{ playlist.title }}</h3>
-            <button @click="deletePlaylist(playlist.id)">Delete</button>
-          </div>
-        </div>
-      </div>
-  
-    <!-- Songs Section -->
-    <div class="section">
-      <button @click="toggleSongs">Songs</button>
-      <div class="songs" v-if="showSongs && songs.length > 0">
-        <div v-for="song in songs" :key="song.id" class="song">
-          <h3>{{ song.title }}</h3>
-          <button v-if="!song.is_flagged" @click="blacklistSong(song.id)">Blacklist</button>
-          <button v-else @click="whitelistSong(song.id)">Whitelist</button>
-        </div>
-      </div>
+          </td>
+        </tr>
+      </table>
     </div>
+  </div><hr>
+
+  <!-- Albums Section -->
+  <div class="section">
+    <button class="func_button" @click="toggleAlbums">Albums</button>
+    <div class="albums" v-if="showAlbums && albums.length > 0">
+      <table>
+        <tr>
+          <th>Title</th>
+          <th>Release Year</th>
+          <th>Action</th>
+        </tr>
+        <tr v-for="album in albums" :key="album.id">
+          <td>{{ album.title }}</td>
+          <td>{{ album.release_year }}</td>
+          <td>
+            <button @click="deleteAlbum(album.id)">Delete</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div><hr>
+
+  <!-- Playlists Section -->
+  <div class="section">
+    <button class="func_button" @click="togglePlaylists">Playlists</button>
+    <div class="playlists" v-if="showPlaylists && playlists.length > 0">
+      <table>
+        <tr>
+          <th>Title</th>
+          <th>Action</th>
+        </tr>
+        <tr v-for="playlist in playlists" :key="playlist.id">
+          <td>{{ playlist.title }}</td>
+          <td>
+            <button @click="deletePlaylist(playlist.id)">Delete</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div><hr>
+
+  <!-- Songs Section -->
+  <div class="section">
+    <button class="func_button" @click="toggleSongs">Songs</button>
+    <div class="songs" v-if="showSongs && songs.length > 0">
+      <table>
+        <tr>
+          <th>Title</th>
+          <th>Action</th>
+        </tr>
+        <tr v-for="song in songs" :key="song.id">
+          <td>{{ song.title }}</td>
+          <td>
+            <button v-if="!song.is_flagged" @click="blacklistSong(song.id)">Blacklist</button>
+            <button v-else @click="whitelistSong(song.id)">Whitelist</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+
 
 
     </div>
@@ -269,7 +335,12 @@ export default {
 
     async blacklistUser(userId) {
       try {
-        const response = await axios.get(`http://localhost:5000/users/users/blacklist/${userId}`, {
+        const response = await axios.put(`http://localhost:5000/userfn/blacklist`, 
+        {
+          user_id : this.userId
+        },
+
+        {
           headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
         });
         console.log('User blacklisted successfully:', response.data);
@@ -281,7 +352,11 @@ export default {
 
     async whitelistUser(userId) {
       try {
-        const response = await axios.get(`http://localhost:5000/users/users/whitelist/${userId}`, {
+        const response = await axios.put(`http://localhost:5000/userfn/whitelist`, 
+        {
+          user_id : this.userId
+        },
+        {
           headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
         });
         console.log('User whitelisted successfully:', response.data);
@@ -332,67 +407,124 @@ export default {
 };
 </script>
 
-  
-  <style scoped>
-  /* visuals */
 
-  .admin-stats-chart {
-  width: 400px;
-  height: 300px;
-  margin: auto;
-  }
-
+<style scoped>
+#stats[data-v-65deba6f] {
+    text-align: center;
+    border: 2px solid red;
+    width: 60%;
+    margin-left:20%;
+}
 
 
+/*--------------------------------------- stats and visuals--------------------------------*/
+.admin-container {
+  display: flex;
+}
+.admin-stats-container,
+.admin-stats-visualization-container {
+  flex: 1;
+  margin-right: 20px;
+}
 
-  /* Style for main dashboard container */
-  .user-info {
-    margin-bottom: 20px;
-  }
-  
-  /* Style for sections */
-  .section {
-    margin-bottom: 20px;
-  }
-  
-  button {
-    margin-bottom: 10px;
-  }
-  
-  .user,
-  .album,
-  .playlist,
-  .song {
-    flex: 1 1 calc(25% - 20px);
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-  }
-  
-  /* Style for buttons */
-  button {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-    background-color: #007bff;
-    color: #fff;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Style for user section */
-  .users,
-  .albums,
-  .playlists,
-  .songs {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  </style>
-  
+.admin-stat-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-stats-chart {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* ---------------------------------------dashboard-------------------------------------------- */
+.dashboard-container {
+  text-align: center;
+}
+
+.user-info {
+  margin-top: 20px;
+}
+
+.user-info p {
+  font-size: 18px;
+  color: #333;
+}
+
+/* -----------------------------------------tables ----------------------------------*/
+.section {
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #ddd;
+}
+
+button {
+  padding: 8px 12px;
+  border: none;
+  width:48%;
+  border-radius: 4px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 23%;
+  cursor: pointer;
+  background-color: #555;
+  color: white;
+}
+
+button:hover {
+  background-color: #777;
+}
+
+/* Adjust styles for specific sections */
+.users th:last-child,
+.albums th:last-child,
+.playlists th:last-child,
+.songs th:last-child {
+  text-align: center;
+}
+
+.users td:nth-child(3),
+.songs td:nth-child(2) {
+  text-align: center;
+}
+
+.users td:last-child,
+.albums td:last-child,
+.playlists td:last-child,
+.songs td:last-child {
+  text-align: center;
+}
+
+
+
+</style>

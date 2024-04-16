@@ -24,6 +24,9 @@ class PlaylistApi(Resource):
     @ns_playlist.marshal_with(playlist_output_model)
     def post(self, id):
         title = request.json.get('title')
+        playlist = Playlist.query.filter_by(user_id = id).filter_by(title=title).first()
+        if playlist:
+            return {'error': 'Playlist title already exists'}, 400
         playlist = Playlist(title=title, user_id=id)
         db.session.add(playlist)
         db.session.commit()

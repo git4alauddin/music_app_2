@@ -5,27 +5,45 @@
       <button class="search-btn" @click="searchSongs">Search</button>
     </div>
 
-    <h1>{{ role }} Dashboard</h1>
     <div class="user-info">
-      <p>Welcome, {{ email }} [{{ role }}]</p>
+      <h2><p>Welcome, {{ email }} [{{ role }}]</p></h2>
       <h3 v-if="role === 'user'" @click="registerAsCreator">[Register as creator]</h3>
-    </div>
+    </div><hr>
 
       <!-- creator stats -->
-      <div>
-      <h2>Statistics</h2>
-      <div v-if="loading">Loading...</div>
-        <div v-else>
-            <p>Total Songs: {{ creatorStats.total_songs }}</p>
-            <p>Total Albums: {{ creatorStats.total_albums }}</p>
-            <p>Total Playlists: {{ creatorStats.total_playlists }}</p>
-            <p>Average Rating: {{ creatorStats.average_rating }}</p>
-        </div>
-      </div>
+      <div class="creator-stats-container">
+  <h2 id="headings">Statistics</h2>
+  <div v-if="loading">Loading...</div>
+  <div v-else>
+    <table class="creator-stats-table">
+      <tr>
+        <th>Category</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td>Total Songs</td>
+        <td>{{ creatorStats.total_songs }}</td>
+      </tr>
+      <tr>
+        <td>Total Albums</td>
+        <td>{{ creatorStats.total_albums }}</td>
+      </tr>
+      <tr>
+        <td>Total Playlists</td>
+        <td>{{ creatorStats.total_playlists }}</td>
+      </tr>
+      <tr>
+        <td>Average Rating</td>
+        <td>{{ creatorStats.average_rating }}</td>
+      </tr>
+    </table>
+  </div>
+</div><hr>
+
 
     <!-- searched songs -->
     <div class="searched-songs">
-      <h2>Searched Songs</h2>
+      <h2 id="headings">Searched Songs</h2>
       <div class="song-container">
         <div v-for="song in searchedSongs" :key="song.id" class="song-details">
           <h3>{{ song.title }} [{{  song.average_rating }}]</h3>
@@ -44,12 +62,12 @@
           <button @click="playSong(song.id)">Play</button>
         </div>
       </div>
-    </div>
+    </div><hr>
 
 
     <!-- Suggested Songs -->
     <div class="suggested-songs">
-      <h2>Suggested Songs</h2>
+      <h2 id="headings">Suggested Songs</h2>
       <div class="song-container">
         <div v-for="song in suggestedSongs" :key="song.id" class="song-details">
           <h3>{{ song.title }} [{{  song.average_rating }}]</h3>
@@ -68,16 +86,18 @@
           <button @click="playSong(song.id)">Play</button>
         </div>
       </div>
-    </div>
+    </div><hr>
+
+    <h2 id = head>Create your own playlists and more...</h2>
 
     <!-- Upload Song Form -->
     <div class="actions">
-      <h2><router-link to="/upload_song">Upload Song</router-link></h2>
+      <h2 id="headings"><router-link to="/upload_song">Upload Song</router-link></h2>
     </div>
 
     <!-- Create Playlist Form -->
     <div class="playlist-form" @click="togglePlaylistForm">
-      <h2>Create Playlist</h2>
+      <h2 id="headings">Create Playlist</h2>
       <form v-if="showPlaylistForm" @submit.prevent="createPlaylist">
         <div class="form-group">
           <label for="playlistName">Playlist Name:</label>
@@ -89,7 +109,7 @@
 
     <!-- Create Album Form -->
     <div class="album-form" @click="toggleAlbumForm">
-      <h2>Create Album</h2>
+      <h2 id="headings">Create Album</h2>
       <form v-if="showAlbumForm" @submit.prevent="createAlbum">
         <div class="form-group">
           <label for="albumName">Album Name:</label>
@@ -101,11 +121,13 @@
         </div>
         <button type="submit" @click="createAlbum">Create Album</button>
       </form>
-    </div>
+    </div><br><hr>
 
+
+    <h2 id = head>Enjoy your own albums and more...</h2>
     <!-- Uploaded Songs Section -->
     <div class="section">
-      <h2 @click.prevent="toggleUploadedSongs">Your Uploaded Songs</h2>
+      <h2 id="headings" @click.prevent="toggleUploadedSongs">Your Uploaded Songs</h2>
       <ul class="uploaded-songs-list" v-if="showUploadedSongs">
         <li v-for="song in uploadedSongs" :key="song.id" class="uploaded-song">
           <div class="song-details">
@@ -121,15 +143,24 @@
       </ul>
     </div>
 
+
+
     <!-- Your Albums -->
     <div class="section">
-      <h2 @click.prevent="toggleYourAlbums">Your Albums</h2>
-      <ul v-if="showYourAlbums">
-        <li v-for="album in yourAlbums" :key="album.id">
-          <div class="album-details">
-            <h3 @click="navigateToAlbum(album.id, album.title)">{{ album.title }}</h3>
-            <p><strong>Release Year:</strong> {{ album.releaseYear }}</p>
-          </div>
+  <h2 id="headings" @click.prevent="toggleYourAlbums">Your Albums</h2>
+  <table v-if="showYourAlbums" class="data-table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Release Year</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="album in yourAlbums" :key="album.id">
+        <td @click="navigateToAlbum(album.id, album.title)">{{ album.title }}</td>
+        <td>{{ album.releaseYear }}</td>
+        <td>
           <button @click="deleteAlbum(album.id)">Delete</button>
           <button @click="toggleAlbumEditForm(album)">Edit</button>
           <form v-if="album.id === editingAlbumId" @submit.prevent="submitAlbumEditForm">
@@ -137,27 +168,37 @@
             <input type="number" v-model="editedAlbumReleaseYear" placeholder="Enter new release year" required>
             <button type="submit">Save</button>
           </form>
-        </li>
-      </ul>
-    </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-    <!-- Your Playlists -->
-    <div class="section">
-      <h2 @click.prevent="toggleYourPlaylists">Your Playlists</h2>
-      <ul v-if="showYourPlaylists">
-        <li v-for="playlist in yourPlaylists" :key="playlist.id">
-          <div class="playlist-details">
-            <h3 @click="navigateToPlaylist(playlist.id, playlist.title)">{{ playlist.title }}</h3>
-          </div>
+<div class="section">
+  <h2 id="headings" @click.prevent="toggleYourPlaylists">Your Playlists</h2>
+  <table v-if="showYourPlaylists" class="data-table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="playlist in yourPlaylists" :key="playlist.id">
+        <td @click="navigateToPlaylist(playlist.id, playlist.title)">{{ playlist.title }}</td>
+        <td>
           <button @click="deletePlaylist(playlist.id)">Delete</button>
           <button @click="togglePlaylistEditForm(playlist)">Edit</button>
           <form v-if="playlist.id === editingPlaylistId" @submit.prevent="submitPlaylistEditForm">
             <input type="text" v-model="editedPlaylistTitle" placeholder="Enter new title" required>
             <button type="submit">Save</button>
           </form>
-        </li>
-      </ul>
-    </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 
 
 
@@ -520,10 +561,80 @@ export default {
 </script>
 
 <style scoped>
-  body{
-    
-  }
-  /* Dashboard Heading */
+
+#head{
+  border: solid 2px rgb(223, 242, 102);
+  border-radius: 5px;
+  text-align: center;
+  color:rgb(9, 123, 45);
+  background-color: rgb(242, 233, 210);
+}
+
+#headings {
+  padding: 8px 12px;
+  border: none;
+  width:48%;
+  border-radius: 4px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 23%;
+  cursor: pointer;
+  background-color: #555;
+  color: white;
+  text-align: center;
+}
+
+#headings a {
+  color: white;
+  text-decoration: none;}
+
+#headings:hover {
+  background-color: #777;
+}
+
+  /* ------------------------------creator stats------------------ */
+  .creator-stats-container {
+  margin-top: 20px;
+}
+
+.creator-stats-container h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.creator-stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.creator-stats-table th,
+.creator-stats-table td {
+  padding: 12px;
+  text-align: left;
+}
+
+.creator-stats-table th {
+  font-weight: bold;
+  background-color: #4CAF50;
+  color: white;
+}
+
+.creator-stats-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.creator-stats-table tr:hover {
+  background-color: #ddd;
+}
+
+.creator-stats-container div.loading-message {
+  font-size: 16px;
+  text-align: center;
+}
+
+
+  /* -------------------Dashboard Heading ----------------------------*/
   h1 {
     text-align: center;
     color: #333; 
@@ -661,6 +772,7 @@ button {
   padding: 5px 10px;
   border: none;
   border-radius: 3px;
+  margin-left:4px;
   cursor: pointer;
   background-color: #007bff;
   color: #fff;
@@ -669,6 +781,136 @@ button {
 button:hover {
   background-color: #0056b3;
 }
+
+
+  /* --------------------------------------------------tables-------------------------------------------------- */
+  .section {
+  margin-bottom: 20px;
+}
+
+.section h2 {
+  font-size: 20px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.data-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.data-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.data-table tr:hover {
+  background-color: #f2f2f2;
+}
+
+.data-table td:first-child {
+  cursor: pointer;
+}
+
+.data-table button {
+  margin-right: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+}
+
+.data-table button:hover {
+  background-color: #45a049;
+}
+
+.data-table form input {
+  padding: 6px 10px;
+  margin-right: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.data-table form button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+}
+
+.data-table form button:hover {
+  background-color: #45a049;
+}
+
+
+/* -------------------------------------------------------------------------------forms---------------------------------------------------- */
+/* Form container styles */
+.form-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Form styles */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"] {
+  width: calc(100% - 22px); /* Adjust width for the border */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.form-group button[type="submit"] {
+  width: calc(100% - 22px); /* Adjust width for the border */
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-group button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+
+
 </style>
 
 

@@ -15,22 +15,26 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 
 ns_song = Namespace('songs', description='Song related operations')
 
-
+import json
 @ns_song.route('/upload_song')
 class UploadSongApi(Resource):
-    @ns_song.expect(upload_song_model)
+    # @ns_song.expect(upload_song_model)
     @jwt_required()
     # @auth_required('token')
     def post(self):
         current_user = get_jwt_identity()
 
-        title = request.json.get('title')
-        artist = request.json.get('artist')
-        genre = request.json.get('genre')
-        lyrics = request.json.get('lyrics')
-        
+        data = json.loads(request.form.get('data'))
 
-        # audio_file = request.files.get('audio_file')
+        title = data.get('title')
+        artist = data.get('artist')
+        genre = data.get('genre')
+        lyrics = data.get('lyrics')
+        
+        audio_file = request.files.get('file')
+        print(title, artist, genre, lyrics)
+        print(audio_file)
+
         random_suffix = random.randint(0, 10000)
 
         # original_filename = secure_filename(audio_file.filename)
@@ -61,7 +65,7 @@ class UploadSongApi(Resource):
             )
 
             db.session.add(song_file)
-            db.session.commit()
+            # db.session.commit()
 
 
 
