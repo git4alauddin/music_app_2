@@ -106,7 +106,7 @@
       async fetchUsers() {
         try {
           const response = await axios.get('http://localhost:5000/users/users', {
-            headers: { Authorization: localStorage.getItem('token') },
+            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
           });
           this.users = response.data;
         } catch (error) {
@@ -117,7 +117,7 @@
       async fetchAlbums() {
         try {
           const response = await axios.get('http://localhost:5000/albums/albums', {
-            headers: { Authorization: localStorage.getItem('token') },
+            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
           });
           this.albums = response.data;
         } catch (error) {
@@ -128,7 +128,7 @@
       async fetchPlaylists() {
         try {
           const response = await axios.get('http://localhost:5000/playlists/playlists', {
-            headers: { Authorization: localStorage.getItem('token') },
+            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
           });
           this.playlists = response.data;
         } catch (error) {
@@ -139,7 +139,7 @@
       async fetchSongs() {
         try {
           const response = await axios.get('http://localhost:5000/songs/songs', {
-            headers: { Authorization: localStorage.getItem('token') },
+            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
           });
           this.songs = response.data;
         } catch (error) {
@@ -151,7 +151,7 @@
       async fetchAdminStats() {
         try {
           const response = await axios.get('http://localhost:5000/users/users/admin_stats', {
-            headers: { Authorization: localStorage.getItem('token') },
+            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
           });
           this.adminStats = response.data;
         } catch (error) {   
@@ -164,7 +164,7 @@
     async blacklistSong(songId) {
       try {
         const response = await axios.get(`http://localhost:5000/songs/songs/flag_song/${songId}`, {
-          headers: { Authorization: localStorage.getItem('token') },
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
         });
         
         console.log('Song blacklisted successfully:', updatedSong);
@@ -176,7 +176,7 @@
     async whitelistSong(songId) {
       try {
         const response = await axios.get(`http://localhost:5000/songs/songs/unflag_song/${songId}`, {
-          headers: { Authorization: localStorage.getItem('token') },
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
         });
         
         console.log('Song whitelisted successfully:', updatedSong);
@@ -188,7 +188,7 @@
     async blacklistUser(userId) {
       try {
         const response = await axios.get(`http://localhost:5000/users/users/blacklist${userId}`, {
-          headers: { Authorization: localStorage.getItem('token') },
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
         });
         
         console.log('User blacklisted successfully:', updatedUser);
@@ -200,7 +200,7 @@
     async whitelistUser(userId) {
       try {
         const response = await axios.get(`http://localhost:5000/users/users/whitelist${userId}`, {
-          headers: { Authorization: localStorage.getItem('token') },
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
         });
         
         console.log('User whitelisted successfully:', updatedUser);
@@ -215,7 +215,7 @@
   
     async deleteAlbum(albumId) {
       axios.delete(`http://localhost:5000/albums/albums/${albumId}`, {
-        headers: { Authorization: localStorage.getItem('token') }, 
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
       })
       .then(response => {
         // If the deletion was successful, remove the album from the yourAlbums array
@@ -233,7 +233,7 @@
 
     async deletePlaylist(playlistId) {
       axios.delete(`http://localhost:5000/playlists/playlists/${playlistId}`, {
-        headers: { Authorization: localStorage.getItem('token') }, 
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
       })
       .then(response => {
         // If the deletion was successful, remove the playlist from the yourPlaylists array

@@ -19,8 +19,11 @@ ns_song = Namespace('songs', description='Song related operations')
 @ns_song.route('/upload_song')
 class UploadSongApi(Resource):
     @ns_song.expect(upload_song_model)
+    @jwt_required()
     # @auth_required('token')
     def post(self):
+        current_user = get_jwt_identity()
+        
         title = request.json.get('title')
         artist = request.json.get('artist')
         genre = request.json.get('genre')
@@ -44,7 +47,7 @@ class UploadSongApi(Resource):
             artist=artist,
             genre=genre,
             lyrics=lyrics,
-            creator_id=1 #current_user.id
+            creator_id=current_user['id'] #current_user.id
         )
         
         try:
@@ -155,6 +158,7 @@ class GetRatingsApi(Resource):
 @ns_song.route('/songs')
 class SongListApi(Resource):
     @ns_song.marshal_with(output_all_songs)
+    @jwt_required()
     def get(self):
         songs = Song.query.all()
         return songs, 200

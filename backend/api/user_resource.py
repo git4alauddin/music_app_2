@@ -129,6 +129,7 @@ class CreatorStatsApi(Resource):
 class AdminStatsApi(Resource):
    
     @ns_user.marshal_with(admin_stats_output_model)
+    @jwt_required()
     def get(self):
         total_users = User.query.count()
         total_songs = Song.query.count()

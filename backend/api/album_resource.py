@@ -5,6 +5,7 @@ from models.song_model import Song
 from extensions.extension import db
 from api.api_models import album_output_model, album_input_model, output_all_songs
 from decorator.decorator import auth_required, roles_accepted
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 '''
 +--------------------------------------------------------------+
 |                         namespace albums                     |
@@ -135,6 +136,7 @@ class AlbumSongApi(Resource):
 @ns_album.route('/albums/')
 class AlbumsListApi(Resource):
     @ns_album.marshal_with(album_output_model)
+    @jwt_required()
     def get (self):
         album = Album.query.all()
         return album, 200

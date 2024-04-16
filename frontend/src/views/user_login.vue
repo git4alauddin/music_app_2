@@ -59,7 +59,7 @@
       body: JSON.stringify({ email: user.email, password: user.password })
     })
       .then((data) => {
-        console.log(data.token)
+        console.log(data)
         localStorage.setItem('token', data.token)
         localStorage.setItem('role', 'user')
         localStorage.setItem('loggedin', 'true')

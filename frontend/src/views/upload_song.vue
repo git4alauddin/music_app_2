@@ -6,7 +6,7 @@
       <div class="jumbotron text-center">
         <h1>Upload Song</h1>
         <h5>Enter song details</h5>
-        <form @submit.prevent="uploadSong1" novalidate>
+        <form @submit.prevent="uploadSong" novalidate>
           <div class="form-group">
             <label for="title">Title:</label>
             <input type="text" class="form-control" id="title" v-model="song.title" required>
@@ -54,32 +54,7 @@ const song = reactive({
   lyrics: ''
 })
 
-function uploadSong() {
-  console.log(localStorage.getItem('token'))
-  customfetch('http://127.0.0.1:5000/songs/upload_song', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': localStorage.getItem('token')        
-      },
-      body: JSON.stringify({title: song.title, artist: song.artist, genre: song.genre, lyrics: song.lyrics})
-  })
-  .then((response) => {
-      if (response.ok) {
-          console.log('Song uploaded successfully')
-          alert('Song uploaded successfully')
-          router.push({name: 'user_dash'})
-      } else {
-          throw new Error('Failed to upload song')
-      }
-  })
-  .catch((error) => {
-      console.error('Error uploading song:', error)
-      alert(error.message || 'An error occurred while uploading the song')
-  })
-};
-
-function  uploadSong1() {
+function  uploadSong() {
             axios
                 .post
                 (`http://localhost:5000/songs/upload_song`, 
@@ -87,7 +62,7 @@ function  uploadSong1() {
                     title: song.title, artist: song.artist, genre: song.genre, lyrics: song.lyrics
                   }, 
                   {
-                    headers: {Authorization: localStorage.getItem('token')},
+                    headers: {Authorization: 'Bearer ' + localStorage.getItem('token')},
                   }
                 )
                 .then(response => {

@@ -4,6 +4,7 @@ from models.playlist_model import Playlist
 from models.song_model import Song
 from extensions.extension import db
 from api.api_models import playlist_output_model, playlist_input_model, output_all_songs
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 '''
 +--------------------------------------------------------------+
 |                         namespace playlists                  |
@@ -128,6 +129,7 @@ class PlaylistSongApi(Resource):
 @ns_playlist.route('/playlists/')
 class PlaylistsListApi(Resource):
     @ns_playlist.marshal_with(playlist_output_model)
+    @jwt_required()
     def get (self):
         playlist = Playlist.query.all()
         return playlist, 200

@@ -185,6 +185,7 @@ export default {
       showAlbumForm: false,
       showYourAlbums: false,
       showYourPlaylists: false,
+      
       playlistName: '',
       albumName: '',
       releaseYear: '',
@@ -206,7 +207,7 @@ export default {
     this.fetchUploadedSongs();
     this.fetchYourAlbums();
     this.fetchYourPlaylists();
-    this.fetchSongs();
+    this.fetchSuggestedSongs();
     this.fetchCreatorStats();
   },
   mounted() {    
@@ -398,7 +399,7 @@ export default {
       }
     },
 
-    async fetchSongs() {
+    async fetchSuggestedSongs() {
       try {
         const response = await axios.get('http://localhost:5000/songs/songs', {
           headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
