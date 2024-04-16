@@ -7,7 +7,8 @@
         </div>
 
         <audio controls>
-            <source src = "../static/songs/arijit_aaaaaaaaaaaaaabb_5735.mp3">
+            <!-- <source src = "music_app_2\backend\static\songs\arijit_aaaaaaaaaaaaaabb_5735.mp3"> -->
+            <source src = "#">
         </audio>
 
         
@@ -22,20 +23,15 @@ export default {
 </script>
 
 <style scoped>
-..player {
+.player {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: #f4f4f4; /* Optional: Add background color */
-  padding: 10px 0; /* Optional: Add padding */
 }
 
 audio {
-  width: 90%;
+    width: 90%;
 }
 
 .song_info {
@@ -47,6 +43,5 @@ audio {
   font-size: 18px;
   color: #333;
 }
-
 
 </style>

@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource
-from flask import request
+from flask import request, send_from_directory
 from api.api_models import upload_song_model, output_all_songs
 from random import random
 # from flask_security import current_user, auth_required
@@ -61,13 +61,14 @@ class UploadSongApi(Resource):
             db.session.commit()
 
             # add the song file
+            
             song_file = SongFile(
                 song_id = song.id,
                 file_name = new_filename
             )
 
             db.session.add(song_file)
-            # db.session.commit()
+            db.session.commit()
 
 
 
@@ -216,3 +217,11 @@ class SearchSongApi(Resource):
         ).all()
 
         return songs, 200
+    
+
+@ns_song.route('/songs/play_song/<string:song_id>')
+class PlaySongApi(Resource):
+    def get(self, song_id):
+        file_name = SongFile.query.filter_by(song_id=song_id).first().file_name
+
+        return send_from_directory(current_app.config['SONG_UPLOAD_FOLDER'], file_name)
