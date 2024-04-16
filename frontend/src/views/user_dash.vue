@@ -553,6 +553,17 @@ export default {
     } catch (error) {
       console.error('Error searching songs:', error);
     }
+  },
+
+  async playSong(songId) {
+    try {
+      const response = await axios.get(`http://localhost:5000/songs/songs/play_song/${songId}`, {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
+      });
+      console.log('song_file:', response.data);
+    } catch (error) {
+      console.error('Error playing song:', error);
+    }
   }
 
   }

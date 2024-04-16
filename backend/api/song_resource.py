@@ -77,7 +77,7 @@ class UploadSongApi(Resource):
             db.session.rollback()
             return {'message': 'Something went wrong'}, 500
         
-        return {'message': 'Song uploaded successfully'}, 201
+        return {'message': 'Song uploaded successfully', 'song_id': song.id}, 201
     
 
 @ns_song.route('/song_lyrics/<string:id>')
@@ -220,8 +220,10 @@ class SearchSongApi(Resource):
     
 
 @ns_song.route('/songs/play_song/<string:song_id>')
+
 class PlaySongApi(Resource):
+    @jwt_required()
     def get(self, song_id):
         file_name = SongFile.query.filter_by(song_id=song_id).first().file_name
 
-        return send_from_directory(current_app.config['SONG_UPLOAD_FOLDER'], file_name)
+        return file_name
