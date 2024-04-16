@@ -199,6 +199,21 @@
   </table><hr>
 </div>
 
+    <!---------------------- player------------- -->
+    <div class="player">
+        <div class="song_info">
+            <h3>playing khamoshiya by arjit...</h3>
+        </div>
+
+        <audio  controls>
+          <source :src="'C:/Users/ASUS/Desktop/proj/music_app_2/backend/static/songs/' + songFileName">
+              <!-- <source id = "audioSource" src=""> -->
+        </audio>
+
+        
+      </div>
+      <!---------------------- player------------- -->
+
 
 
 
@@ -242,6 +257,8 @@ export default {
       searchedSongs : '',
 
       creatorStats: '',
+
+      songFileName:  '',
     };
   },
   created() {
@@ -560,11 +577,12 @@ export default {
       const response = await axios.get(`http://localhost:5000/songs/songs/play_song/${songId}`, {
         headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
       });
+      this.songFileName = response.data;
       console.log('song_file:', response.data);
     } catch (error) {
       console.error('Error playing song:', error);
     }
-  }
+  },
 
   }
 };
@@ -921,7 +939,27 @@ button:hover {
 }
 
 
+/* -----------------player--------------- */
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
+audio {
+    width: 90%;
+}
+
+.song_info {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.song_info h3 {
+  font-size: 18px;
+  color: #333;
+}
 </style>
 
 
