@@ -70,104 +70,128 @@
     </div>
   </template>
   
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        email: '',
-        role: '',
-        users: [],
-        albums: [],
-        playlists: [],
-        songs: [],
-        showUsers: false,
-        showAlbums: false,
-        showPlaylists: false,
-        showSongs: false,
+<script>
+import axios from 'axios';
 
-        adminStats: {},
+export default {
+  data() {
+    return {
+      email: '',
+      role: '',
+      users: [],
+      albums: [],
+      playlists: [],
+      songs: [],
+      showUsers: false,
+      showAlbums: false,
+      showPlaylists: false,
+      showSongs: false,
+      adminStats: {},
+    };
+  },
 
-       
-      };
+  created() {
+    this.fetchAdminStats();
+  },
+
+  mounted() {
+    this.email = localStorage.getItem('email') || '';
+    this.role = localStorage.getItem('role') || '';
+  },
+
+  methods: {
+    async fetchUsers() {
+      try {
+        const response = await axios.get('http://localhost:5000/users/users', {
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+        });
+        this.users = response.data;
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
     },
-  
-    created() {
-      this.fetchAdminStats();
+
+    async fetchAlbums() {
+      try {
+        const response = await axios.get('http://localhost:5000/albums/albums', {
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+        });
+        this.albums = response.data;
+      } catch (error) {
+        console.error('Error fetching albums:', error);
+      }
+    },      
+
+    async fetchPlaylists() {
+      try {
+        const response = await axios.get('http://localhost:5000/playlists/playlists', {
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+        });
+        this.playlists = response.data;
+      } catch (error) {
+        console.error('Error fetching playlists:', error);
+      }
     },
-  
-    mounted() {
-      this.email = localStorage.getItem('email') || '';
-      this.role = localStorage.getItem('role') || '';
+
+    async fetchSongs() {
+      try {
+        const response = await axios.get('http://localhost:5000/songs/songs', {
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+        });
+        this.songs = response.data;
+      } catch (error) {
+        console.error('Error fetching songs:', error);
+      }
     },
-  
-    methods: {
-      async fetchUsers() {
-        try {
-          const response = await axios.get('http://localhost:5000/users/users', {
-            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
-          });
-          this.users = response.data;
-        } catch (error) {
-          console.error('Error fetching users:', error);
-        }
-      },
-  
-      async fetchAlbums() {
-        try {
-          const response = await axios.get('http://localhost:5000/albums/albums', {
-            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
-          });
-          this.albums = response.data;
-        } catch (error) {
-          console.error('Error fetching albums:', error);
-        }
-      },      
-  
-      async fetchPlaylists() {
-        try {
-          const response = await axios.get('http://localhost:5000/playlists/playlists', {
-            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
-          });
-          this.playlists = response.data;
-        } catch (error) {
-          console.error('Error fetching playlists:', error);
-        }
-      },
-  
-      async fetchSongs() {
-        try {
-          const response = await axios.get('http://localhost:5000/songs/songs', {
-            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
-          });
-          this.songs = response.data;
-        } catch (error) {
-          console.error('Error fetching songs:', error);
-        }
-      },
 
+    async fetchAdminStats() {
+      try {
+        const response = await axios.get('http://localhost:5000/users/users/admin_stats', {
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+        });
+        this.adminStats = response.data;
+        console.log('Admin stats:', this.adminStats);
+      } catch (error) {   
+        console.error('Error fetching admin stats:', error);
+      }
+    },
 
-      async fetchAdminStats() {
-        try {
-          const response = await axios.get('http://localhost:5000/users/users/admin_stats', {
-            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
-          });
-          this.adminStats = response.data;
-        } catch (error) {   
-          console.error('Error fetching admin stats:', error);
-        }
-      },
-  
+    toggleUsers() {
+      this.showUsers = !this.showUsers;
+      if (this.showUsers && this.users.length === 0) {
+        this.fetchUsers();
+      }
+    },
 
-  
+    toggleAlbums() {
+      this.showAlbums = !this.showAlbums;
+      if (this.showAlbums && this.albums.length === 0) {
+        this.fetchAlbums();
+      }
+    },
+
+    togglePlaylists() {
+      this.showPlaylists = !this.showPlaylists;
+      if (this.showPlaylists && this.playlists.length === 0) {
+        this.fetchPlaylists();
+      }
+    },
+
+    toggleSongs() {
+      this.showSongs = !this.showSongs;
+      if (this.showSongs && this.songs.length === 0) {
+        this.fetchSongs();
+      }
+    },
+
     async blacklistSong(songId) {
       try {
         const response = await axios.get(`http://localhost:5000/songs/songs/flag_song/${songId}`, {
-          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
         });
-        
-        console.log('Song blacklisted successfully:', updatedSong);
+        console.log('Song blacklisted successfully:', response.data);
+        this.fetchSongs();
+
       } catch (error) {
         console.error('Error blacklisting song:', error);
       }
@@ -176,108 +200,19 @@
     async whitelistSong(songId) {
       try {
         const response = await axios.get(`http://localhost:5000/songs/songs/unflag_song/${songId}`, {
-          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
         });
-        
-        console.log('Song whitelisted successfully:', updatedSong);
+        console.log('Song whitelisted successfully:', response.data);
+        this.fetchSongs();
       } catch (error) {
         console.error('Error whitelisting song:', error);
       }
     },
 
-    async blacklistUser(userId) {
-      try {
-        const response = await axios.get(`http://localhost:5000/users/users/blacklist${userId}`, {
-          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
-        });
-        
-        console.log('User blacklisted successfully:', updatedUser);
-      } catch (error) {
-        console.error('Error blacklisting user:', error);
-      }
-    },
+  },
+};
+</script>
 
-    async whitelistUser(userId) {
-      try {
-        const response = await axios.get(`http://localhost:5000/users/users/whitelist${userId}`, {
-          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
-        });
-        
-        console.log('User whitelisted successfully:', updatedUser);
-      } catch (error) {
-        console.error('Error whitelisting user:', error);
-      }
-    },   
-
-
-
-  
-  
-    async deleteAlbum(albumId) {
-      axios.delete(`http://localhost:5000/albums/albums/${albumId}`, {
-        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
-      })
-      .then(response => {
-        // If the deletion was successful, remove the album from the yourAlbums array
-        this.yourAlbums = this.yourAlbums.filter(album => album.id !== albumId);
-        console.log('Album deleted successfully.');
-
-        this.fetchYourAlbums();
-        this.fetchAdminStats();
-      })
-      .catch(error => {
-        console.error('Error deleting album:', error);
-      });
-    },
-
-
-    async deletePlaylist(playlistId) {
-      axios.delete(`http://localhost:5000/playlists/playlists/${playlistId}`, {
-        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
-      })
-      .then(response => {
-        // If the deletion was successful, remove the playlist from the yourPlaylists array
-        this.yourPlaylists = this.yourPlaylists.filter(playlist => playlist.id !== playlistId);
-        console.log('Playlist deleted successfully.');
-        
-        this.fetchYourPlaylists();
-        this.fetchAdminStats();
-      })
-      .catch(error => {
-        console.error('Error deleting playlist:', error);
-      });
-    },
-  
-      toggleUsers() {
-        this.showUsers = !this.showUsers;
-        if (this.showUsers) {
-          this.fetchUsers();
-        }
-      },
-  
-      toggleAlbums() {
-        this.showAlbums = !this.showAlbums;
-        if (this.showAlbums) {
-          this.fetchAlbums();
-        }
-      },
-  
-      togglePlaylists() {
-        this.showPlaylists = !this.showPlaylists;
-        if (this.showPlaylists) {
-          this.fetchPlaylists();
-        }
-      },
-  
-      toggleSongs() {
-        this.showSongs = !this.showSongs;
-        if (this.showSongs) {
-          this.fetchSongs();
-        }
-      },
-    },
-  };
-  </script>
   
   <style scoped>
   /* Style for main dashboard container */

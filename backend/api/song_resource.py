@@ -23,7 +23,7 @@ class UploadSongApi(Resource):
     # @auth_required('token')
     def post(self):
         current_user = get_jwt_identity()
-        
+
         title = request.json.get('title')
         artist = request.json.get('artist')
         genre = request.json.get('genre')
@@ -167,6 +167,7 @@ class SongListApi(Resource):
 @ns_song.route('/songs/flag_song/<string:song_id>')
 class FlagSongApi(Resource):
     # @auth_required('token')
+    @jwt_required()
     def get(self, song_id):
         song = Song.query.get(song_id)
         if song:
@@ -180,6 +181,7 @@ class FlagSongApi(Resource):
 @ns_song.route('/songs/unflag_song/<string:song_id>')
 class UnflagSongApi(Resource):
     # @auth_required('token')
+    @jwt_required()
     def get(self, song_id):
         song = Song.query.get(song_id)
         if song:
