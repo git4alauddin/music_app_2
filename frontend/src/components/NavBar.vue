@@ -4,6 +4,9 @@
       <!-- Add your brand logo or text here -->
       MusicHub
     </router-link>
+
+
+
     <button class="navbar-toggler" @click="toggleNav">
       <span class="navbar-toggler-icon"></span>
     </button>

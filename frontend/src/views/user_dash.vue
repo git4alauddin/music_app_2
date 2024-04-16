@@ -196,7 +196,7 @@
         </td>
       </tr>
     </tbody>
-  </table>
+  </table><hr>
 </div>
 
 

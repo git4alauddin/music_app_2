@@ -1,9 +1,9 @@
 <template>
   <navbar />
-  <player />
   <body>
     <router-view></router-view>
   </body>
+  <player />
   
   
 
