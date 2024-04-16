@@ -82,6 +82,7 @@ class UserSongApi(Resource):
 @ns_user.route('/users')
 class UsersListApi(Resource):
     @ns_user.marshal_with(user_output_model)
+    @jwt_required()
     def get(self):
         user = User.query.all()
         return user, 200
@@ -91,22 +92,26 @@ class UsersListApi(Resource):
 ns_user.route('/users/blacklist/<string:user_id>')
 class UserBlacklistApi(Resource):    
     # @auth_required('token')
-
-    def put(self, user_id):
+    @jwt_required()
+    def get(self, user_id):
         user = User.query.get(user_id)
+        print(user.to_dict())
         user.active = False
         db.session.commit()
-        return user
+        return {'message': 'User blacklisted'}
     
 ns_user.route('/users/whitelist/<string:user_id>')
 class UserWhitelistApi(Resource):
     # @auth_required('token')
-    
-    def put(self, user_id):
+    @jwt_required()
+    def get(self, user_id):
         user = User.query.get(user_id)
-        user.active = True
-        db.session.commit()
-        return user
+        if user:
+            print(user.to_dict())
+            user.active = True
+            db.session.commit()
+            return {'message': 'User whitelisted'}
+        return {'message': 'User not found'}
 
 # -------------------stats---------------------------
 @ns_user.route('/users/creator_stats')

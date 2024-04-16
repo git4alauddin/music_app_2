@@ -126,7 +126,7 @@ class PlaylistSongApi(Resource):
             return {'error': 'No title provided'}, 400
 
 #----------------------------------/playlists/-----------------------------------#
-@ns_playlist.route('/playlists/')
+@ns_playlist.route('/playlists')
 class PlaylistsListApi(Resource):
     @ns_playlist.marshal_with(playlist_output_model)
     @jwt_required()

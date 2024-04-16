@@ -133,7 +133,7 @@ class AlbumSongApi(Resource):
             return {'error': 'No title provided'}, 400
 
 #------------------------------------/albums/-------------------------------------#
-@ns_album.route('/albums/')
+@ns_album.route('/albums')
 class AlbumsListApi(Resource):
     @ns_album.marshal_with(album_output_model)
     @jwt_required()

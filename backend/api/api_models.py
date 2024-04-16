@@ -70,8 +70,9 @@ album_input_model = api.model("AlbumInput", {
 user_output_model = api.model("User", {
     "id": fields.String,
     "username": fields.String,
-    "role": fields.String,
-    "email": fields.String
+    "roles": fields.List(fields.String),
+    "email": fields.String,
+    "active": fields.Boolean
 })
 
 user_input_model = api.model("UserInput", {

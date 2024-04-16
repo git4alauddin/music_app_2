@@ -19,7 +19,7 @@
             <p>Total Songs: {{ creatorStats.total_songs }}</p>
             <p>Total Albums: {{ creatorStats.total_albums }}</p>
             <p>Total Playlists: {{ creatorStats.total_playlists }}</p>
-            <p>Total Rating: {{ creatorStats.average_rating }}</p>
+            <p>Average Rating: {{ creatorStats.average_rating }}</p>
         </div>
       </div>
 
@@ -185,7 +185,7 @@ export default {
       showAlbumForm: false,
       showYourAlbums: false,
       showYourPlaylists: false,
-      
+
       playlistName: '',
       albumName: '',
       releaseYear: '',
@@ -423,6 +423,7 @@ export default {
 
         this.fetchSongs();
         this.searchSongs();
+        this.fetchCreatorStats();
       } catch (error) {
         console.error('Error rating song:', error);
       }

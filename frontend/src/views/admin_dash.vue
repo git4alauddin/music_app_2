@@ -27,6 +27,9 @@
           <div v-for="user in users" :key="user.id" class="user">
             <h3>{{ user.email }}</h3>
             <h2>{{ user.username }}</h2>
+            <h2>active: {{ user.active }}</h2>
+            <button v-if="user.active" @click="blacklistUser(user.id)">Blacklist</button>
+            <button v-else @click="whitelistUser(user.id)">Whitelist</button>
           </div>
         </div>
       </div>
@@ -106,6 +109,7 @@ export default {
           headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
         });
         this.users = response.data;
+        console.log('fetched all users:', this.users);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -117,6 +121,7 @@ export default {
           headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
         });
         this.albums = response.data;
+        
       } catch (error) {
         console.error('Error fetching albums:', error);
       }
@@ -208,6 +213,67 @@ export default {
         console.error('Error whitelisting song:', error);
       }
     },
+
+    async blacklistUser(userId) {
+      try {
+        const response = await axios.get(`http://localhost:5000/users/users/blacklist/${userId}`, {
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
+        });
+        console.log('User blacklisted successfully:', response.data);
+        this.fetchUsers();
+      } catch (error) {
+        console.error('Error blacklisting user:', error);
+      }
+    }, 
+
+    async whitelistUser(userId) {
+      try {
+        const response = await axios.get(`http://localhost:5000/users/users/whitelist/${userId}`, {
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
+        });
+        console.log('User whitelisted successfully:', response.data);
+        this.fetchUsers();
+      } catch (error) {
+        console.error('Error whitelisting user:', error);
+      }
+    },  
+
+
+    async deleteAlbum(albumId) {
+      axios.delete(`http://localhost:5000/albums/albums/${albumId}`, {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
+      })
+      .then(response => {
+        // If the deletion was successful, remove the album from the yourAlbums array
+        this.albums = this.albums.filter(album => album.id !== albumId);
+        console.log('Album deleted successfully.');
+
+        this.fetchAlbums();
+        this.fetchAdminStats();
+      })
+      .catch(error => {
+        console.error('Error deleting album:', error);
+      });
+    },
+
+    async deletePlaylist(playlistId) {
+      axios.delete(`http://localhost:5000/playlists/playlists/${playlistId}`, {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }, 
+      })
+      .then(response => {
+        // If the deletion was successful, remove the playlist from the yourPlaylists array
+        this.playlists = this.playlists.filter(playlist => playlist.id !== playlistId);
+        console.log('Playlist deleted successfully.');
+        
+        this.fetchPlaylists();
+        this.fetchAdminStats();
+      })
+      .catch(error => {
+        console.error('Error deleting playlist:', error);
+      });
+    },
+
+
 
   },
 };

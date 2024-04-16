@@ -20,7 +20,9 @@ from sec import bcrypt
 
 # initialize app
 app = Flask(__name__)
-CORS(app)
+# CORS(app, origins="*", methods="*")
+CORS(app, resources={r"/*": {"origins": "*"}}, methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+
 app.config.from_object(DevelopmentConfig)
 
 # initialize extensions

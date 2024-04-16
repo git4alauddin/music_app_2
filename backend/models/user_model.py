@@ -27,7 +27,8 @@ class User(db.Model):
         return {
             'id': self.id,
             'username': self.username,
-            'email': self.email
+            'email': self.email,
+            'active': self.active
         }
     
 user_roles = db.Table('user_roles',
