@@ -10,15 +10,19 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///11.sqlite'
     SECRET_KEY = 'my-very-secret-key'
-    # add salt 
+   
     
     # HEADER FOR SECURITY
     SECURITY_TOKEN_AUTHENTICATION_HEADER = 'Authorization'
 
     SONG_UPLOAD_FOLDER = 'static/songs'
 
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)  # Token expires after 1 day
-# app.config['JWT_EXPIRATION_DELTA'] = timedelta(days=1)  # Token expires after 1 day    
-# env_production
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)  \
+    
+    #cache
+    CACHE_TYPE = 'RedisCache'
+    CACHE_REDIS_HOST = 'localhost'
+    CACHE_PORT = 6379
+# a
 class ProductionConfig(Config):
     pass

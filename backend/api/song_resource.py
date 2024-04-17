@@ -11,7 +11,8 @@ from models.song_model import Song, SongFile, Rating
 import random
 from sqlalchemy import or_, func
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
-
+# import cache
+from cache import cache
 
 ns_song = Namespace('songs', description='Song related operations')
 
@@ -165,6 +166,7 @@ class GetRatingsApi(Resource):
 @ns_song.route('/songs')
 class SongListApi(Resource):
     @ns_song.marshal_with(output_all_songs)
+    @cache.cached(timeout=100, key_prefix='all_songs')
     @jwt_required()
     def get(self):
         songs = Song.query.all()

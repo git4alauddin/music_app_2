@@ -7,6 +7,7 @@ from configs.config import DevelopmentConfig
 # from models.user_model import user_datastore
 from datetime import timedelta
 from flask_jwt_extended import JWTManager
+from cache import cache
 
 # import resources
 from api.auth_resource import ns_auth
@@ -35,10 +36,13 @@ api.init_app(app)
 jwt = JWTManager(app)
 
 
+
 if jwt:
     print('jwt initialized')
 bcrypt.init_app(app)
 
+#cache
+cache.init_app(app)
 
 with app.app_context():
     db.create_all()
