@@ -16,12 +16,14 @@ ns_playlist = Namespace('playlists', description='Playlist related operations')
 @ns_playlist.route('/playlists/<string:id>')
 class PlaylistApi(Resource):
     @ns_playlist.marshal_with(playlist_output_model)
+    @jwt_required()
     def get(self, id):
         playlist = Playlist.query.get(id)
         return playlist, 200
     
     @ns_playlist.expect(playlist_input_model)
     @ns_playlist.marshal_with(playlist_output_model)
+    @jwt_required()
     def post(self, id):
         title = request.json.get('title')
         playlist = Playlist.query.filter_by(user_id = id).filter_by(title=title).first()
@@ -33,6 +35,7 @@ class PlaylistApi(Resource):
         return {'message': 'Playlist created'}, 201
     
     @ns_playlist.marshal_with(playlist_output_model)
+    @jwt_required()
     def delete(self, id):
         playlist = Playlist.query.get(id)
         db.session.delete(playlist)
@@ -41,6 +44,7 @@ class PlaylistApi(Resource):
     
     @ns_playlist.expect(playlist_input_model)
     @ns_playlist.marshal_with(playlist_output_model)
+    @jwt_required()
     def put(self, id):
         playlist = Playlist.query.get(id)
         title = request.json.get('title')
@@ -55,6 +59,7 @@ class PlaylistApi(Resource):
 @ns_playlist.route('/playlists/<string:id>/songs')
 class PlaylistSongsApi(Resource):
     @ns_playlist.marshal_with(output_all_songs)
+    @jwt_required()
     def get(self, id):
         playlist = Playlist.query.get(id)
         if not playlist:
@@ -66,6 +71,7 @@ class PlaylistSongsApi(Resource):
 @ns_playlist.route('/playlists/<string:id>/songs/<string:song_id>')
 class PlaylistSongApi(Resource):
     @ns_playlist.marshal_with(output_all_songs)
+    @jwt_required()
     def get(self, id, song_id):
         playlist = Playlist.query.get(id)
         if not playlist:
@@ -81,6 +87,7 @@ class PlaylistSongApi(Resource):
             return {"message": "Song not found"}, 404
         
     @ns_playlist.marshal_with(output_all_songs)
+    @jwt_required()
     def post(self, id, song_id):
         playlist = Playlist.query.get(id)
         if not playlist:
@@ -94,7 +101,8 @@ class PlaylistSongApi(Resource):
         db.session.commit()
 
         return song, 201
-        
+
+    @jwt_required()  
     def delete(self, id, song_id):
         playlist = Playlist.query.get(id)
         if not playlist:
@@ -114,6 +122,7 @@ class PlaylistSongApi(Resource):
 
     @ns_playlist.expect(playlist_input_model)
     @ns_playlist.marshal_with(playlist_output_model)
+    @jwt_required()
     def put(self, id):
         playlist = Playlist.query.get(id)
         if playlist is None:

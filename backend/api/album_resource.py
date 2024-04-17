@@ -4,7 +4,7 @@ from models.album_model import Album
 from models.song_model import Song
 from extensions.extension import db
 from api.api_models import album_output_model, album_input_model, output_all_songs
-from decorator.decorator import auth_required, roles_accepted
+# from decorator.decorator import auth_required, roles_accepted
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 '''
 +--------------------------------------------------------------+
@@ -17,12 +17,14 @@ ns_album = Namespace('albums', description='Album related operations')
 @ns_album.route('/albums/<string:id>')
 class AlbumApi(Resource):
     @ns_album.marshal_with(album_output_model)
+    @jwt_required()
     def get(self, id):
         album = Album.query.get(id)
         return album, 200
     
     @ns_album.expect(album_input_model)
     @ns_album.marshal_with(album_output_model)
+    @jwt_required()
     def post(self, id):
         title = request.json.get('title')
         release_year = request.json.get('release_year')
@@ -32,6 +34,7 @@ class AlbumApi(Resource):
         return album, 201
     
     @ns_album.marshal_with(album_output_model)
+    @jwt_required()
     def delete(self, id):
         album = Album.query.get(id)
         db.session.delete(album)
@@ -40,6 +43,7 @@ class AlbumApi(Resource):
     
     @ns_album.expect(album_input_model)
     @ns_album.marshal_with(album_output_model)
+    @jwt_required()
     def put(self, id):
         album = Album.query.get(id)
         title = request.json.get('title')
@@ -53,6 +57,7 @@ class AlbumApi(Resource):
 @ns_album.route('/albums/<string:id>/songs')
 class AlbumSongsApi(Resource):
     @ns_album.marshal_with(output_all_songs)
+    @jwt_required()
     def get(self, id):
         album = Album.query.get(id)
         if not album:
@@ -64,6 +69,7 @@ class AlbumSongsApi(Resource):
 @ns_album.route('/albums/<string:id>/songs/<string:song_id>')
 class AlbumSongApi(Resource):
     @ns_album.marshal_with(output_all_songs)
+    @jwt_required()
     def get(self, id, song_id):
         album = Album.query.get(id)
         if not album:
@@ -82,6 +88,7 @@ class AlbumSongApi(Resource):
             return {"message": "Song not found"}, 404
         
     @ns_album.marshal_with(output_all_songs)
+    @jwt_required()
     def post(self, id, song_id):
         album = Album.query.get(id)
         if not album:
@@ -95,7 +102,8 @@ class AlbumSongApi(Resource):
         db.session.commit()
 
         return song, 201
-        
+
+    @jwt_required() 
     def delete(self, id, song_id):
         album = Album.query.get(id)
         if not album:
@@ -118,6 +126,7 @@ class AlbumSongApi(Resource):
 
     @ns_album.expect(album_input_model)
     @ns_album.marshal_with(album_output_model)
+    @jwt_required()
     def put(self, id):
         album = Album.query.get(id)
         if album is None:
