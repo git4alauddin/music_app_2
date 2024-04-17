@@ -202,12 +202,11 @@
     <!---------------------- player------------- -->
     <div class="player">
         <div class="song_info">
-            <h3>playing khamoshiya by arjit...</h3>
+            <h3>playing [song] by [artist]...</h3>
         </div>
 
         <audio  controls>
-          <source :src="'C:/Users/ASUS/Desktop/proj/music_app_2/backend/static/songs/' + songFileName">
-              <!-- <source id = "audioSource" src=""> -->
+          <source :src="songFilePath" type="audio/mpeg">
         </audio>
 
         
@@ -258,6 +257,8 @@ export default {
 
       creatorStats: '',
 
+      song: '',
+      artist: '',
       songFileName:  '',
     };
   },
@@ -572,6 +573,8 @@ export default {
     }
   },
 
+
+  // ------------------------------------play song--------------------
   async playSong(songId) {
     try {
       const response = await axios.get(`http://localhost:5000/songs/songs/play_song/${songId}`, {
@@ -584,6 +587,11 @@ export default {
     }
   },
 
+  },
+  computed: {
+    songFilePath() {
+      return `C:/Users/ASUS/Desktop/proj/music_app_2/backend/static/songs/${this.songFileName}`; 
+    }
   }
 };
 
