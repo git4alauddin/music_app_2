@@ -23,6 +23,19 @@ class DevelopmentConfig(Config):
     CACHE_TYPE = 'RedisCache'
     CACHE_REDIS_HOST = 'localhost'
     CACHE_PORT = 6379
+
+    #mail
+    MAIL_SERVER = "smtp.gmail.com"
+    MAIL_PORT = 465
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = 'divyanshdixit0902@gmail.com'
+    MAIL_PASSWORD = "ogue kurr cedh ruyv"
+    MAIL_DEFAULT_SENDER = 'divyanshdixit0902@gmail.com'
+
+    #celery
+    CELERY_BROKER_URL = 'redis://localhost:6379/1'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/2'
 # a
 class ProductionConfig(Config):
     pass

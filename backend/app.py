@@ -7,7 +7,16 @@ from configs.config import DevelopmentConfig
 # from models.user_model import user_datastore
 from datetime import timedelta
 from flask_jwt_extended import JWTManager
+from models.user_model import User
+
+#celery
+from worker import make_celery
+from celery.schedules import crontab
+
+#mail and cache
 from cache import cache
+from mail import mail
+from flask_mail import Message
 
 # import resources
 from api.auth_resource import ns_auth
@@ -43,6 +52,32 @@ bcrypt.init_app(app)
 
 #cache
 cache.init_app(app)
+
+# mail
+mail.init_app(app)
+
+# celery
+celery = make_celery(app)
+
+
+# -------------------------celery tasks------------------------------#
+def send_reminder(user):
+    with mail.connect() as conn:
+        msg = Message(subject='Reminder', sender='divyanshdixit0902@gmail.com', recipients=[user.email])
+        msg.body = f'Hello {user.username},\n\nPlease visit my site.. you would love that!!'
+
+
+def setup_periodic_tasks(sender, **kwargs):
+    # sender.add_periodic_task(crontab(hour=5, minute=14), send_monthly_report.s())
+    sender.add_periodic_task(crontab(hour=17, minute=1), visit_reminder.s())
+
+@celery.task()
+def visit_reminder():
+    users = User.query.all()
+    for user in users:
+        send_reminder(user)
+    return f'Reminder sent to {len(users)} users'
+# -------------------------celery tasks------------------------------#
 
 with app.app_context():
     db.create_all()
